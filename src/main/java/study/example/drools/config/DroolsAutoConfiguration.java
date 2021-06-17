@@ -35,9 +35,8 @@ import java.io.IOException;
  **/
 
 @Configuration
-//@ComponentScan("study.example.drools")
 public class DroolsAutoConfiguration {
-//    public static final String drlFile = "rules/TAXI_FARE_RULE.drl";
+
     public static final String RULES_PATH = "rules/";
 
     @Bean
@@ -59,19 +58,12 @@ public class DroolsAutoConfiguration {
     @ConditionalOnMissingBean(KieContainer.class)
     public KieContainer kieContainer() throws IOException {
         final KieRepository kieRepository = getKieServices().getRepository();
-
-        kieRepository.addKieModule(new KieModule() {
-            public ReleaseId getReleaseId() {
-                return kieRepository.getDefaultReleaseId();
-            }
-        });
+        kieRepository.addKieModule(kieRepository::getDefaultReleaseId);
 
         KieBuilder kieBuilder = getKieServices().newKieBuilder(kieFileSystem());
         kieBuilder.buildAll();
 
-        KieContainer kieContainer=getKieServices().newKieContainer(kieRepository.getDefaultReleaseId());
-
-        return kieContainer;
+        return getKieServices().newKieContainer(kieRepository.getDefaultReleaseId());
     }
 
     private KieServices getKieServices() {
@@ -95,25 +87,4 @@ public class DroolsAutoConfiguration {
     public KModuleBeanFactoryPostProcessor kiePostProcessor() {
         return new KModuleBeanFactoryPostProcessor();
     }
-
-//    @Bean
-//    public KieContainer kieContainer() {
-//        KieServices kieServices = KieServices.Factory.get();
-//
-//        // 클래스 경로에 있는 모든 규칙 파일을 컴파일하고,
-//        // 그 결과인 KieModule 객체를 KieContainer 에 추가한다.
-//        return kieServices.getKieClasspathContainer();
-//
-//        KieBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-//        kSession = kBase.newStatelessKnowledgeSession();
-//        KieBase base = kSession.getKieBase();
-//        kieSession = base.newKieSession();
-////        KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
-////        kieFileSystem.write(ResourceFactory.newClassPathResource(drlFile));
-////        KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
-////        kieBuilder.buildAll();
-////        KieModule kieModule = kieBuilder.getKieModule();
-////
-////        return kieServices.newKieContainer(kieModule.getReleaseId());
-//    }
 }
