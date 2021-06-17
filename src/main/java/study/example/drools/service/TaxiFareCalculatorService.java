@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.stereotype.Service;
-import study.example.drools.config.TaxiFareConfiguration;
 import study.example.drools.domain.Fare;
 import study.example.drools.domain.TaxiRide;
 
@@ -26,14 +25,16 @@ import study.example.drools.domain.TaxiRide;
  **/
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class TaxiFareCalculatorService {
 
-    private final KieContainer kieContainer;
+    private final KieSession kieSession;
+
+    public TaxiFareCalculatorService(KieContainer kieContainer) {
+        this.kieSession = kieContainer.newKieSession();
+    }
 
     public Long calculateFare(TaxiRide taxiRide, Fare rideFare) {
-        final KieSession kieSession = kieContainer.newKieSession();
         kieSession.setGlobal("rideFare", rideFare);
         kieSession.insert(taxiRide);
         kieSession.fireAllRules();

@@ -1,16 +1,14 @@
 package study.example.drools.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
-import study.example.drools.config.TaxiFareConfiguration;
+import study.example.drools.config.DroolsAutoConfiguration;
 import study.example.drools.domain.Fare;
 import study.example.drools.domain.TaxiRide;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * <pre>
@@ -29,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
  **/
 
 @SpringBootTest
-@ContextConfiguration(classes = TaxiFareConfiguration.class)
 class TaxiFareCalculatorServiceTest {
 
     @Autowired

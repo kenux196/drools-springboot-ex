@@ -35,14 +35,12 @@ import java.util.List;
 @Service
 public class AirConditionerService {
 
-    private final KieContainer kieContainer;
     private final KieSession kieSession;
 
     private final List<AirConditioner> airConditioners = new ArrayList<>();
     private final TempSensor tempSensor = new TempSensor();
 
     public AirConditionerService(KieContainer kieContainer) {
-        this.kieContainer = kieContainer;
         this.kieSession = kieContainer.newKieSession();
     }
 

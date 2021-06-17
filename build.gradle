@@ -36,12 +36,12 @@ dependencies {
 	implementation 'org.slf4j:slf4j-api'
 
 	implementation "org.kie:kie-api:${droolsVersion}"
-//	implementation "org.kie:kie-ci:${droolsVersion}"
+	implementation "org.kie:kie-ci:${droolsVersion}"
 	implementation "org.kie:kie-spring:${droolsVersion}"
 	implementation "org.drools:drools-core:${droolsVersion}"
-//	implementation "org.drools:drools-compiler:${droolsVersion}"
+	implementation "org.drools:drools-compiler:${droolsVersion}"
 //    implementation "org.drools:drools-mvel:${droolsVersion}"
-//	implementation "org.drools:drools-templates:${droolsVersion}"
+	implementation "org.drools:drools-templates:${droolsVersion}"
 //    implementation "org.drools:drools-bom:${droolsVersion}"
 
 }
