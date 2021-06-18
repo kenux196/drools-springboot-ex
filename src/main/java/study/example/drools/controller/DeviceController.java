@@ -61,4 +61,10 @@ public class DeviceController {
         deviceService.updateSensorData(value);
         return ResponseEntity.ok("온도 값 설정 완료");
     }
+
+    @GetMapping("/rules")
+    public ResponseEntity<?> getRules() {
+        final List<String> rules = deviceService.getRules();
+        return ResponseEntity.ok(rules);
+    }
 }

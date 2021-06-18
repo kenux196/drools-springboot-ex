@@ -17,6 +17,7 @@ import study.example.drools.listener.CustomProcessEventListener;
 import study.example.drools.repository.DeviceRepository;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -109,5 +110,20 @@ public class DeviceService {
                 log.info("        meta : " + rule.getMetaData());
             }
         }
+    }
+
+    public List<String> getRules() {
+        List<String> ruleNames = new ArrayList<>();
+        final KieBase kieBase = kieContainer.getKieBase();
+        Collection<KiePackage> kiePackages = kieBase.getKiePackages();
+        log.info("kiePackages : " + kiePackages);
+        for (KiePackage kiePackage : kiePackages) {
+            log.info("kiePackage : " + kiePackage.getName());
+            Collection<Rule> rules = kiePackage.getRules();
+            for (Rule rule : rules) {
+                ruleNames.add(rule.getName());
+            }
+        }
+        return ruleNames;
     }
 }
