@@ -10,7 +10,10 @@ import study.example.drools.domain.AirConditioner;
 import study.example.drools.domain.Fare;
 import study.example.drools.domain.TaxiRide;
 import study.example.drools.domain.TempSensor;
+import study.example.drools.listener.CustomAgendaEventListener;
+import study.example.drools.listener.CustomWorkingMemoryEventListener;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -34,13 +37,21 @@ import java.util.List;
 @Service
 public class AirConditionerService {
 
-    private final KieSession kieSession;
+    private final KieContainer kieContainer;
+    private KieSession kieSession;
 
     private final List<AirConditioner> airConditioners = new ArrayList<>();
     private final TempSensor tempSensor = new TempSensor();
 
     public AirConditionerService(KieContainer kieContainer) {
-        this.kieSession = kieContainer.newKieSession();
+        this.kieContainer = kieContainer;
+    }
+
+    @PostConstruct
+    private void initService() {
+        kieSession = kieContainer.newKieSession();
+        kieSession.addEventListener(new CustomAgendaEventListener());
+        kieSession.addEventListener(new CustomWorkingMemoryEventListener());
     }
 
     public FactHandle addAirConditioner(AirConditioner airConditioner) {
