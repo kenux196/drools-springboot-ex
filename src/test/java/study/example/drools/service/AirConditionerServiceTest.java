@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * </pre>
  *
  * @author skyun
- * @version 1.0.0
  * @date 2021-06-17
  **/
 

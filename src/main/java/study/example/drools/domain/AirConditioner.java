@@ -1,11 +1,24 @@
 package study.example.drools.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * <pre>
+ * 서비스 명   : drools
+ * 패키지 명   : study.example.drools.domain
+ * 클래스 명   : AirConditioner
+ * 설명       :
+ *
+ * ====================================================================================
+ *
+ * </pre>
+ * @date        2021-06-17
+ * @author      skyun
+ **/
 
 @Data
 @ToString

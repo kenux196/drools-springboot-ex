@@ -1,6 +1,5 @@
 package study.example.drools.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -20,7 +19,6 @@ import study.example.drools.domain.TaxiRide;
  * </pre>
  *
  * @author skyun
- * @version 1.0.0
  * @date 2021-06-17
  **/
 

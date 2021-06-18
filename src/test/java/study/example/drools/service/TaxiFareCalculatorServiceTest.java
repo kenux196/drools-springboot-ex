@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * </pre>
  *
  * @author skyun
- * @version 1.0.0
  * @date 2021-06-17
  **/
 
