@@ -48,11 +48,9 @@ public class DeviceService {
 
     @PostConstruct
     private void initService() {
-        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         kieSession.addEventListener(new CustomAgendaEventListener());
         kieSession.addEventListener(new CustomRuleRunTimeEventListener());
         kieSession.addEventListener(new CustomProcessEventListener());
-        reviewKieContainer();
     }
 
     public FactHandle addDevice(Device device) {
@@ -77,7 +75,6 @@ public class DeviceService {
         final int firedRuleCount = kieSession.fireAllRules();
         log.info("fired rule count = " + firedRuleCount);
         printFactSize("온도 값 변경 완료", false);
-        reviewKieContainer();
     }
 
     public Collection<FactHandle> getFactHandles() {

@@ -64,7 +64,6 @@ public class DroolsAutoConfiguration {
         KieBuilder kieBuilder = getKieServices().newKieBuilder(kieFileSystem());
         kieBuilder.buildAll();
 
-        log.info("kenux debug............... kieContainer");
         return getKieServices().newKieContainer(kieRepository.getDefaultReleaseId());
     }
 
