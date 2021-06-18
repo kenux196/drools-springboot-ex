@@ -41,16 +41,14 @@ import java.util.List;
 public class DeviceService {
 
     private final KieContainer kieContainer;
+    private final KieSession kieSession;
     private final DeviceRepository deviceRepository;
-
-    private KieSession kieSession;
 
     private final TempSensor tempSensor = new TempSensor();
 
     @PostConstruct
     private void initService() {
         log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        kieSession = kieContainer.newKieSession();
         kieSession.addEventListener(new CustomAgendaEventListener());
         kieSession.addEventListener(new CustomRuleRunTimeEventListener());
         kieSession.addEventListener(new CustomProcessEventListener());
