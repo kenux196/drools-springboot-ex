@@ -1,5 +1,6 @@
 package study.example.drools.service;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;

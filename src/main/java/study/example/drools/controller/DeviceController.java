@@ -36,6 +36,7 @@ public class DeviceController {
     public ResponseEntity<Long> addDevice() {
         final Device airConditioner = Device.createAirConditioner(false);
         deviceService.addDevice(airConditioner);
+        deviceService.updateSensorData(40);
         return ResponseEntity.ok(airConditioner.getId());
     }
 
