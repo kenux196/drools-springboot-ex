@@ -10,8 +10,8 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 * <pre>
 * 서비스 명   : drools
 * 패키지 명   : study.example.drools.listener
-* 클래스 명   : CustomWorkingMemoryEventListener
-* 설명       :
+* 클래스 명   : CustomRuleRunTimeEventListener
+* 설명       : Working-Memory event listener
 *
 * ====================================================================================
 *
@@ -21,7 +21,7 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 **/
 
 @Slf4j
-public class CustomWorkingMemoryEventListener implements RuleRuntimeEventListener {
+public class CustomRuleRunTimeEventListener implements RuleRuntimeEventListener {
     @Override
     public void objectInserted(ObjectInsertedEvent event) {
         log.info("objectInserted event.getObject().getClass() = " + event.getObject().getClass());

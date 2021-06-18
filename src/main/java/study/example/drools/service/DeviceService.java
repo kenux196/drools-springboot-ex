@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 import study.example.drools.domain.Device;
 import study.example.drools.domain.TempSensor;
 import study.example.drools.listener.CustomAgendaEventListener;
-import study.example.drools.listener.CustomWorkingMemoryEventListener;
+import study.example.drools.listener.CustomRuleRunTimeEventListener;
+import study.example.drools.listener.CustomProcessEventListener;
 import study.example.drools.repository.DeviceRepository;
 
 import javax.annotation.PostConstruct;
@@ -47,7 +48,8 @@ public class DeviceService {
     private void initService() {
         kieSession = kieContainer.newKieSession();
         kieSession.addEventListener(new CustomAgendaEventListener());
-        kieSession.addEventListener(new CustomWorkingMemoryEventListener());
+        kieSession.addEventListener(new CustomRuleRunTimeEventListener());
+        kieSession.addEventListener(new CustomProcessEventListener());
     }
 
     public FactHandle addDevice(Device device) {
