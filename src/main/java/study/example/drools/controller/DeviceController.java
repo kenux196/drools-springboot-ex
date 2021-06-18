@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import study.example.drools.domain.Device;
+import study.example.drools.dto.DeviceAddRequest;
 import study.example.drools.dto.DeviceStatusResponse;
 import study.example.drools.service.DeviceService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,10 +35,12 @@ public class DeviceController {
     private final DeviceService deviceService;
 
     @PostMapping("/device")
-    public ResponseEntity<Long> addDevice() {
-        final Device airConditioner = Device.createAirConditioner(false);
-        deviceService.addDevice(airConditioner);
-        return ResponseEntity.ok(airConditioner.getId());
+    public ResponseEntity<?> addDevice(@RequestBody @Valid DeviceAddRequest request) {
+        for (int i = 0; i < request.getDeviceCount(); i++) {
+            final Device airConditioner = Device.createAirConditioner(false);
+            deviceService.addDevice(airConditioner);
+        }
+        return ResponseEntity.ok("Added device count : " + deviceService.getDevices().size());
     }
 
     @GetMapping("/device")
