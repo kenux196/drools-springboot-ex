@@ -1,7 +1,7 @@
 package study.example.drools.domain;
 
 import lombok.Data;
-import lombok.ToString;
+import study.example.drools.domain.enums.DeviceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,22 +10,22 @@ import java.util.List;
  * <pre>
  * 서비스 명   : drools
  * 패키지 명   : study.example.drools.domain
- * 클래스 명   : AirConditioner
+ * 클래스 명   : Device
  * 설명       :
  *
  * ====================================================================================
  *
  * </pre>
- * @date        2021-06-17
- * @author      skyun
+ *
+ * @author skyun
+ * @date 2021-06-18
  **/
 
 @Data
-@ToString
-public class AirConditioner {
-    private long id;
-    private float temp;
-    private boolean operating;
+public class Device {
+    private Long id;
+    private DeviceType type;
+    private Boolean operating;
     private List<String> dummy = new ArrayList<>();
 
     String base = "{\"name\":null,\"nameDisplayCoordinate\":null,\"type\":null,\"mappedType\":null," +
@@ -42,21 +42,18 @@ public class AirConditioner {
             "{\"id\":\"AirConditioner_Indoor_DhwSetTemp\",\"enabled\":null,\"unit\":null,\"desired\":40.0}]," +
             "\"meters\":null,\"lights\":null,\"id\":null,\"airConditioner\":null}";
 
-    public String getAirConditionerName() {
-        return id + "번 에어컨";
+    public String getDeviceName() {
+        return id + "번 디바이스";
     }
 
-    public AirConditioner(int id) {
+    public static Device createAirConditioner(long id, boolean operating) {
+        return new Device(id, DeviceType.AIR_CONDITIONER, operating);
+    }
+
+    public Device(long id, DeviceType type, boolean operating) {
         this.id = id;
-        this.temp = 20;
+        this.type = type;
         this.operating = false;
-        makeDummy();
-    }
-
-    public AirConditioner(int id, float temp, boolean operating) {
-        this.id = id;
-        this.temp = temp;
-        this.operating = operating;
         makeDummy();
     }
 
@@ -65,4 +62,9 @@ public class AirConditioner {
             dummy.add(base);
         }
     }
+
+    public String getDeviceInfo() {
+        return id + "번 디바이스 : " + type.getName();
+    }
+
 }

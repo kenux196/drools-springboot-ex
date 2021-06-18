@@ -6,15 +6,13 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.springframework.stereotype.Service;
-import study.example.drools.domain.AirConditioner;
-import study.example.drools.domain.Fare;
-import study.example.drools.domain.TaxiRide;
+import study.example.drools.domain.Device;
 import study.example.drools.domain.TempSensor;
 import study.example.drools.listener.CustomAgendaEventListener;
 import study.example.drools.listener.CustomWorkingMemoryEventListener;
+import study.example.drools.repository.DeviceRepository;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,7 +20,7 @@ import java.util.List;
  * <pre>
  * 서비스 명   : drools
  * 패키지 명   : study.example.drools.service
- * 클래스 명   : AirConditionerService
+ * 클래스 명   : DeviceService
  * 설명       :
  *
  * ====================================================================================
@@ -30,22 +28,20 @@ import java.util.List;
  * </pre>
  *
  * @author skyun
- * @date 2021-06-17
+ * @date 2021-06-18
  **/
 
 @Slf4j
 @Service
-public class AirConditionerService {
+@RequiredArgsConstructor
+public class DeviceService {
 
     private final KieContainer kieContainer;
+    private final DeviceRepository deviceRepository;
+
     private KieSession kieSession;
 
-    private final List<AirConditioner> airConditioners = new ArrayList<>();
     private final TempSensor tempSensor = new TempSensor();
-
-    public AirConditionerService(KieContainer kieContainer) {
-        this.kieContainer = kieContainer;
-    }
 
     @PostConstruct
     private void initService() {
@@ -54,11 +50,11 @@ public class AirConditionerService {
         kieSession.addEventListener(new CustomWorkingMemoryEventListener());
     }
 
-    public FactHandle addAirConditioner(AirConditioner airConditioner) {
-        airConditioners.add(airConditioner);
-        FactHandle factHandle = kieSession.insert(airConditioner);
+    public FactHandle addDevice(Device device) {
+        deviceRepository.addDevice(device);
+        FactHandle factHandle = kieSession.insert(device);
         kieSession.fireAllRules();
-        printFactSize("에어컨 추가 => " + airConditioner.getAirConditionerName(), false);
+        printFactSize("기기 추가 => " + device.getDeviceInfo(), false);
         return factHandle;
     }
 
@@ -90,5 +86,9 @@ public class AirConditionerService {
                 log.info("factHandle = " + factHandle.toExternalForm());
             }
         }
+    }
+
+    public List<Device> getDevices() {
+        return deviceRepository.getDeviceList();
     }
 }
