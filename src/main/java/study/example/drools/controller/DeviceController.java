@@ -34,7 +34,7 @@ public class DeviceController {
 
     @PostMapping("/device")
     public ResponseEntity<Long> addDevice() {
-        final Device airConditioner = Device.createAirConditioner(false);
+        final Device airConditioner = Device.createAirConditioner(true);
         deviceService.addDevice(airConditioner);
         deviceService.updateSensorData(20);
         return ResponseEntity.ok(airConditioner.getId());
