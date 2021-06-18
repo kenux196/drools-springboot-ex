@@ -2,6 +2,9 @@ package study.example.drools.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -46,10 +49,12 @@ public class DeviceService {
 
     @PostConstruct
     private void initService() {
+        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         kieSession = kieContainer.newKieSession();
         kieSession.addEventListener(new CustomAgendaEventListener());
         kieSession.addEventListener(new CustomRuleRunTimeEventListener());
         kieSession.addEventListener(new CustomProcessEventListener());
+        reviewKieContainer();
     }
 
     public FactHandle addDevice(Device device) {
@@ -71,8 +76,10 @@ public class DeviceService {
             kieSession.insert(tempSensor); // insert new fact
             log.debug("온도 센서 Fact 추가");
         }
-        kieSession.fireAllRules();
+        final int firedRuleCount = kieSession.fireAllRules();
+        log.info("fired rule count = " + firedRuleCount);
         printFactSize("온도 값 변경 완료", false);
+        reviewKieContainer();
     }
 
     public Collection<FactHandle> getFactHandles() {
@@ -92,5 +99,20 @@ public class DeviceService {
 
     public List<Device> getDevices() {
         return deviceRepository.getDeviceList();
+    }
+
+    public void reviewKieContainer() {
+        log.info("kieBaseNames : " + kieContainer.getKieBaseNames());
+        final KieBase kieBase = kieContainer.getKieBase();
+        Collection<KiePackage> kiePackages = kieBase.getKiePackages();
+        log.info("kiePackages : " + kiePackages);
+        for (KiePackage kiePackage : kiePackages) {
+            log.info("kiePackage : " + kiePackage.getName());
+            Collection<Rule> rules = kiePackage.getRules();
+            for (Rule rule : rules) {
+                log.info("    " + rule);
+                log.info("        meta : " + rule.getMetaData());
+            }
+        }
     }
 }

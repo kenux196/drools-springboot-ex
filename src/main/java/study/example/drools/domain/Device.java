@@ -48,7 +48,7 @@ public class Device {
 
     public Device(DeviceType type, boolean operating) {
         this.type = type;
-        this.operating = false;
+        this.operating = operating;
         makeDummy();
     }
 

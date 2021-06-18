@@ -1,5 +1,6 @@
 package study.example.drools.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -33,6 +34,7 @@ import java.io.IOException;
  * @date 2021-06-17
  **/
 
+@Slf4j
 @Configuration
 public class DroolsAutoConfiguration {
 
@@ -62,6 +64,7 @@ public class DroolsAutoConfiguration {
         KieBuilder kieBuilder = getKieServices().newKieBuilder(kieFileSystem());
         kieBuilder.buildAll();
 
+        log.info("kenux debug............... kieContainer");
         return getKieServices().newKieContainer(kieRepository.getDefaultReleaseId());
     }
 
