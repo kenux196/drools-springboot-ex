@@ -29,6 +29,8 @@ public class DeviceRepository {
 
     public void addDevice(Device device) {
         deviceList.add(device);
+        final int size = deviceList.size();
+        device.setId((long) size);
     }
 
     public List<Device> getDeviceList() {

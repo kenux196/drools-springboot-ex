@@ -42,16 +42,11 @@ public class Device {
             "{\"id\":\"AirConditioner_Indoor_DhwSetTemp\",\"enabled\":null,\"unit\":null,\"desired\":40.0}]," +
             "\"meters\":null,\"lights\":null,\"id\":null,\"airConditioner\":null}";
 
-    public String getDeviceName() {
-        return id + "번 디바이스";
+    public static Device createAirConditioner(boolean operating) {
+        return new Device(DeviceType.AIR_CONDITIONER, operating);
     }
 
-    public static Device createAirConditioner(long id, boolean operating) {
-        return new Device(id, DeviceType.AIR_CONDITIONER, operating);
-    }
-
-    public Device(long id, DeviceType type, boolean operating) {
-        this.id = id;
+    public Device(DeviceType type, boolean operating) {
         this.type = type;
         this.operating = false;
         makeDummy();

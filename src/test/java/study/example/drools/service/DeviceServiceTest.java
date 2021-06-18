@@ -34,7 +34,7 @@ class DeviceServiceTest {
     @Test
     @DisplayName("기기 추가 테스트")
     void addDeviceTest() {
-        final Device device = Device.createAirConditioner(1, false);
+        final Device device = Device.createAirConditioner(false);
         deviceService.addDevice(device);
         final Collection<FactHandle> factHandles = deviceService.getFactHandles();
         assertThat(factHandles).hasSize(1);
@@ -43,7 +43,7 @@ class DeviceServiceTest {
     @Test
     @DisplayName("온도가 30도 이상이면 에어컨 켠다.")
     void airConditionerOnTest() {
-        final Device device = Device.createAirConditioner(1, false);
+        final Device device = Device.createAirConditioner(false);
         deviceService.addDevice(device);
         deviceService.updateSensorData(35);
 
@@ -53,7 +53,7 @@ class DeviceServiceTest {
     @Test
     @DisplayName("온도가 30도 미만이면 에어컨 끈다")
     void airConditionerOffTest() {
-        final Device device = Device.createAirConditioner(1, true);
+        final Device device = Device.createAirConditioner(true);
         deviceService.addDevice(device);
         deviceService.updateSensorData(24);
 

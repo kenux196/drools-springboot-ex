@@ -35,13 +35,17 @@ public class CustomRuleRunTimeEventListener implements RuleRuntimeEventListener 
     public void objectUpdated(ObjectUpdatedEvent event) {
         log.info("objectUpdated event.getObject().getClass() = " + event.getObject().getClass());
         log.info("objectUpdated event.getFactHandle() = " + event.getFactHandle());
-        log.info("objectUpdated event.getRule().getName() = " + event.getRule().getName());
+        if (event.getRule() != null) {
+            log.info("objectUpdated event.getRule().getName() = " + event.getRule().getName());
+        }
     }
 
     @Override
     public void objectDeleted(ObjectDeletedEvent event) {
         log.info("objectInserted event.getOldObject().getClass() = " + event.getOldObject().getClass());
         log.info("objectInserted event.getFactHandle() = " + event.getFactHandle());
-        log.info("objectInserted event.getRule().getName() = " + event.getRule().getName());
+        if (event.getRule() != null) {
+            log.info("objectInserted event.getRule().getName() = " + event.getRule().getName());
+        }
     }
 }
