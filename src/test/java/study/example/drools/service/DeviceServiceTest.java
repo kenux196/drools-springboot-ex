@@ -7,6 +7,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import study.example.drools.domain.Device;
+import study.example.drools.domain.TempSensor;
 
 import java.util.Collection;
 
@@ -37,6 +38,7 @@ class DeviceServiceTest {
     void addDeviceTest() {
         final Device device = Device.createAirConditioner(false);
         deviceService.addDevice(device);
+        deviceService.fireAllRules();
         final Collection<FactHandle> factHandles = deviceService.getFactHandles();
         assertThat(factHandles).hasSize(1);
     }
@@ -47,13 +49,30 @@ class DeviceServiceTest {
         final Device device = Device.createAirConditioner(false);
         deviceService.addDevice(device);
         deviceService.updateSensorData(35);
-
+        deviceService.fireAllRules();
         assertThat(device.getOperating()).isTrue();
     }
 
     @Test
+    @DisplayName("온도 30도 이상, 새로운 센서 객체 주입")
+    void airConditionerOnTestFromNewSensor() {
+        final Device device = Device.createAirConditioner(false);
+        deviceService.addDeviceOnlyRepository(device);
+        for (int i = 0; i < 4; i++) {
+            int temperature = 23;
+            if (i == 3) temperature = 33;
+            final TempSensor tempSensor = new TempSensor(i, temperature, 35, 3);
+            deviceService.updateSensorData(tempSensor);
+        }
+        deviceService.fireAllRules();
+        assertThat(device.getOperating()).isTrue();
+    }
+
+
+    @Test
     @DisplayName("온도가 30도 미만이면 에어컨 끈다")
     void airConditionerOffTest() {
+
         final Device device = Device.createAirConditioner(true);
         deviceService.addDevice(device);
         deviceService.updateSensorData(24);

@@ -1,21 +1,22 @@
 
 import study.example.drools.domain.Device
 import study.example.drools.domain.TempSensor
+import study.example.drools.service.RuleActionHandler
 
 rule "룰 - 실내 온도가 30도 이상이면 에어컨을 켠다"
     no-loop true
     lock-on-active true
+//    timer( int: 1s 5s )
     when
-      $tempSensor : TempSensor(indoorTemp >= 30)
-      $device : Device(operating == false)
+      $tempSensor : TempSensor(deviceId == 3, indoorTemp >= 30);
     then
-      modify($device) { setOperating(true) }
-      System.out.println($device.getDeviceInfo() + " Power On");
+      RuleActionHandler.getInstance().handler($tempSensor.getDeviceId(), $tempSensor.getIndoorTemp());
     end
 
 rule "룰 - 실내 온도가 30도 미만이면 에어컨 끈다"
     no-loop true
     lock-on-active true
+//    timer( int: 1s 5s )
     when
       $tempSensor : TempSensor(indoorTemp < 30)
       $device : Device(operating == true)

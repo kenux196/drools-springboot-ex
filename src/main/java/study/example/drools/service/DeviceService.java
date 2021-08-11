@@ -57,9 +57,13 @@ public class DeviceService {
     public FactHandle addDevice(Device device) {
         deviceRepository.addDevice(device);
         FactHandle factHandle = kieSession.insert(device);
-        kieSession.fireAllRules();
+//        fireAllRules();
         printFactSize("기기 추가 => " + device.getDeviceInfo(), false);
         return factHandle;
+    }
+
+    public void addDeviceOnlyRepository(Device device) {
+        deviceRepository.addDevice(device);
     }
 
     public void updateSensorData(int temp) {
@@ -73,9 +77,28 @@ public class DeviceService {
             kieSession.insert(tempSensor); // insert new fact
             log.debug("온도 센서 Fact 추가");
         }
+//        fireAllRules();
+        printFactSize("온도 값 변경 완료", false);
+    }
+
+    public void updateSensorData(TempSensor tempSensor) {
+        log.debug("온도 센서 값 변경 = " + tempSensor.getIndoorTemp());
+        tempSensor.setIndoorTemp(tempSensor.getIndoorTemp());
+        FactHandle factHandle = kieSession.getFactHandle(tempSensor);
+        if (factHandle != null) {
+            kieSession.update(factHandle, tempSensor); // update exist fact
+            log.debug("온도 센서 Fact 업데이트");
+        } else {
+            kieSession.insert(tempSensor); // insert new fact
+            log.debug("온도 센서 Fact 추가");
+        }
+//        fireAllRules();
+        printFactSize("온도 값 변경 완료", false);
+    }
+
+    public void fireAllRules() {
         final int firedRuleCount = kieSession.fireAllRules();
         log.info("fired rule count = " + firedRuleCount);
-        printFactSize("온도 값 변경 완료", false);
     }
 
     public Collection<FactHandle> getFactHandles() {
@@ -95,6 +118,12 @@ public class DeviceService {
 
     public List<Device> getDevices() {
         return deviceRepository.getDeviceList();
+    }
+
+    public void changeDeviceStatus() {
+        for (Device device : getDevices()) {
+            device.setOperating(true);
+        }
     }
 
     public void reviewKieContainer() {
