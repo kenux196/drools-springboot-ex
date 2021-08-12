@@ -12,7 +12,6 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
@@ -25,7 +24,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.springframework.stereotype.Service;
-import study.example.drools.core.domain.Device;
 import study.example.drools.core.domain.SingleStatusRule;
 import study.example.drools.core.domain.TempSensor;
 import study.example.drools.core.drools.listener.CustomAgendaEventListener;
@@ -33,7 +31,6 @@ import study.example.drools.core.drools.listener.CustomKieBaseListener;
 import study.example.drools.core.drools.listener.CustomProcessEventListener;
 import study.example.drools.core.drools.listener.CustomRuleRunTimeEventListener;
 import study.example.drools.core.drools.template.SingleStatusTemplate;
-import study.example.drools.core.repository.DeviceRepository;
 
 import javax.annotation.PostConstruct;
 import java.io.StringReader;
@@ -49,7 +46,6 @@ public class DroolsService {
     private KnowledgeBase kBase;
     private StatelessKnowledgeSession kSession;
     private KieServices kieServices;
-    private KieContainer kieContainer;
     private KieSession kieSession;
     private final SingleStatusTemplate singleStatusTemplate;
 
@@ -171,25 +167,9 @@ public class DroolsService {
         }
     }
 
-    public void reviewKieContainer() {
-        log.info("kieBaseNames : " + kieContainer.getKieBaseNames());
-        final KieBase kieBase = kieContainer.getKieBase();
-        Collection<KiePackage> kiePackages = kieBase.getKiePackages();
-        log.info("kiePackages : " + kiePackages);
-        for (KiePackage kiePackage : kiePackages) {
-            log.info("kiePackage : " + kiePackage.getName());
-            Collection<Rule> rules = kiePackage.getRules();
-            for (Rule rule : rules) {
-                log.info("    " + rule);
-                log.info("        meta : " + rule.getMetaData());
-            }
-        }
-    }
-
     public List<String> getRules() {
         List<String> ruleNames = new ArrayList<>();
-        final KieBase kieBase = kieContainer.getKieBase();
-        Collection<KiePackage> kiePackages = kieBase.getKiePackages();
+        Collection<KiePackage> kiePackages = kBase.getKiePackages();
         log.info("kiePackages : " + kiePackages);
         for (KiePackage kiePackage : kiePackages) {
             log.info("kiePackage : " + kiePackage.getName());
@@ -199,5 +179,15 @@ public class DroolsService {
             }
         }
         return ruleNames;
+    }
+
+    public void validateRules() {
+        for (int i = 0; i < 100; i++) {
+            int temperature = 23;
+            int deviceId = i % 10;
+            if (i == 3) temperature = 33;
+            validateRule(new TempSensor(deviceId, temperature, 35, 3));
+        }
+        fireAllRules();
     }
 }

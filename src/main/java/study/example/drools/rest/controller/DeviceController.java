@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import study.example.drools.core.domain.Device;
+import study.example.drools.core.domain.SingleStatusRule;
 import study.example.drools.core.service.DroolsService;
 import study.example.drools.rest.dto.DeviceAddRequest;
 import study.example.drools.rest.dto.DeviceStatusResponse;
@@ -46,6 +47,7 @@ public class DeviceController {
     @GetMapping("/sensor")
     public ResponseEntity<?> changeSensorValue(@RequestParam("value") int value) {
         droolsService.validateRule(value);
+        droolsService.fireAllRules();
         return ResponseEntity.ok("온도 값 설정 완료");
     }
 
@@ -55,8 +57,15 @@ public class DeviceController {
         return ResponseEntity.ok(rules);
     }
 
+    @PostMapping("/rules")
+    public ResponseEntity<?> createRule(@RequestBody SingleStatusRule singleStatusRule) {
+        droolsService.addRule3(singleStatusRule);
+        return ResponseEntity.ok("oK");
+    }
+
     @GetMapping("/monitoring-start")
     public ResponseEntity<?> startMonitoring() {
+        droolsService.validateRules();
         return ResponseEntity.ok("true");
     }
 }

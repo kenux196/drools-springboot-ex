@@ -2,11 +2,14 @@ package study.example.drools.core.domain;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Setter
-public class SingleStatusRule {
+public class SingleStatusRule implements Serializable {
 
     /**
      * Rule Id
