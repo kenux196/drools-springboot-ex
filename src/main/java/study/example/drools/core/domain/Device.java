@@ -3,6 +3,7 @@ package study.example.drools.core.domain;
 import lombok.*;
 import study.example.drools.core.domain.enums.DeviceType;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,11 +11,29 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity
+@Table(name = "device")
 public class Device {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Enumerated(EnumType.STRING)
     private DeviceType type;
+
     private Boolean operating;
+
     private Integer temperature;
+
+    @OneToMany(mappedBy = "device")
+    private List<RuleDevice> ruleDevices;
+
+//    private List<RuleConditionDevice> ruleConditionDevices;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "condition_id")
+    private RuleCondition ruleCondition;
 
     public static Device createAirConditioner(boolean operating) {
         return new Device(DeviceType.AIR_CONDITIONER, operating);
