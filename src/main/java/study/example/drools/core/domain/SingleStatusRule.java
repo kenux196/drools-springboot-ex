@@ -1,4 +1,4 @@
-package study.example.drools.domain;
+package study.example.drools.core.domain;
 
 import lombok.*;
 

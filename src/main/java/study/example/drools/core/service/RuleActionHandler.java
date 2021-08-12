@@ -1,14 +1,9 @@
-package study.example.drools.service;
+package study.example.drools.core.service;
 
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.naming.factory.BeanFactory;
 import study.example.drools.utils.ApplicationContextProvider;
-
-import java.util.Set;
-
-import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @RequiredArgsConstructor

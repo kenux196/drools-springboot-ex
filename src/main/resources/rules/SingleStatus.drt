@@ -10,10 +10,10 @@ template header
     RULE_NAME
     CLASS_NAME
 
-package study.example.drools.rule
+package study.example.drools.core.rule
 
-import study.example.drools.domain.*
-import study.example.drools.service.RuleActionHandler
+import study.example.drools.core.domain.*
+import study.example.drools.core.service.RuleActionHandler
 
 template "RuleForSingleStatus"
 

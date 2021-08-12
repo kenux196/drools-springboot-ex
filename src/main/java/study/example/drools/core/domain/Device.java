@@ -1,25 +1,10 @@
-package study.example.drools.domain;
+package study.example.drools.core.domain;
 
 import lombok.Data;
-import study.example.drools.domain.enums.DeviceType;
+import study.example.drools.core.domain.enums.DeviceType;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * <pre>
- * 서비스 명   : drools
- * 패키지 명   : study.example.drools.domain
- * 클래스 명   : Device
- * 설명       :
- *
- * ====================================================================================
- *
- * </pre>
- *
- * @author skyun
- * @date 2021-06-18
- **/
 
 @Data
 public class Device {

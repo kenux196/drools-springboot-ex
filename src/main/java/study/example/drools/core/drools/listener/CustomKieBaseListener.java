@@ -1,16 +1,4 @@
-/**
- * Project: B.IOT Cloud
- *
- * Copyright (c) 2017 DMC R&D Center, SAMSUNG ELECTRONICS Co.,LTD.
- * (Maetan dong)129, Samsung-ro Yeongtong-gu, Suwon-si. Gyeonggi-do 443-742, Korea
- * All right reserved.
- *
- * This software is the confidential and proprietary information of Samsung Electronics, Inc.
- * ("Confidential Information"). You shall not disclose such Confidential Information and
- * shall use it only in accordance with the terms of the license agreement you entered
- * into with Samsung Electronics.
- */
-package study.example.drools.listener;
+package study.example.drools.core.drools.listener;
 
 import lombok.extern.slf4j.Slf4j;
 import org.kie.api.event.kiebase.*;

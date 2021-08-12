@@ -1,38 +1,25 @@
-package study.example.drools.controller;
+package study.example.drools.rest.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import study.example.drools.domain.Device;
-import study.example.drools.dto.DeviceAddRequest;
-import study.example.drools.dto.DeviceStatusResponse;
-import study.example.drools.service.DeviceService;
+import study.example.drools.core.domain.Device;
+import study.example.drools.core.service.DroolsService;
+import study.example.drools.rest.dto.DeviceAddRequest;
+import study.example.drools.rest.dto.DeviceStatusResponse;
+import study.example.drools.core.service.DeviceService;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * <pre>
- * 서비스 명   : drools
- * 패키지 명   : study.example.drools.controller
- * 클래스 명   : DeviceController
- * 설명       :
- *
- * ====================================================================================
- *
- * </pre>
- *
- * @author skyun
- * @date 2021-06-18
- **/
-
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/rule")
+@RequestMapping(value = "/drools")
 public class DeviceController {
 
     private final DeviceService deviceService;
+    private final DroolsService droolsService;
 
     @PostMapping("/device")
     public ResponseEntity<?> addDevice(@RequestBody @Valid DeviceAddRequest request) {
@@ -58,13 +45,18 @@ public class DeviceController {
 
     @GetMapping("/sensor")
     public ResponseEntity<?> changeSensorValue(@RequestParam("value") int value) {
-        deviceService.updateSensorData(value);
+        droolsService.validateRule(value);
         return ResponseEntity.ok("온도 값 설정 완료");
     }
 
     @GetMapping("/rules")
     public ResponseEntity<?> getRules() {
-        final List<String> rules = deviceService.getRules();
+        final List<String> rules = droolsService.getRules();
         return ResponseEntity.ok(rules);
+    }
+
+    @GetMapping("/monitoring-start")
+    public ResponseEntity<?> startMonitoring() {
+        return ResponseEntity.ok("true");
     }
 }

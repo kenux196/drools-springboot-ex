@@ -1,4 +1,4 @@
-package study.example.drools.template;
+package study.example.drools.core.drools.template;
 
 import lombok.extern.slf4j.Slf4j;
 import org.drools.template.DataProvider;
@@ -6,7 +6,7 @@ import org.drools.template.DataProviderCompiler;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import study.example.drools.domain.SingleStatusRule;
+import study.example.drools.core.domain.SingleStatusRule;
 
 import java.io.IOException;
 import java.io.InputStream;
