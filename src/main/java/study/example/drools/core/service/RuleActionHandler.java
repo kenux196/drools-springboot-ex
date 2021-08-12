@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import study.example.drools.utils.ApplicationContextProvider;
 
 @Slf4j
-@RequiredArgsConstructor
 public class RuleActionHandler {
 
     /**

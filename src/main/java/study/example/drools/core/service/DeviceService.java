@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 import study.example.drools.core.domain.Device;
 import study.example.drools.core.domain.SingleStatusRule;
 import study.example.drools.core.domain.TempSensor;
+import study.example.drools.core.domain.enums.DeviceType;
 import study.example.drools.core.drools.template.SingleStatusTemplate;
 import study.example.drools.core.repository.DeviceRepository;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Slf4j
@@ -17,21 +19,17 @@ import java.util.List;
 public class DeviceService {
 
     private final DeviceRepository deviceRepository;
-    private final SingleStatusTemplate singleStatusTemplate;
-    private final TempSensor tempSensor = new TempSensor();
 
-    public static SingleStatusRule createRule(long ruleId, long deviceId, boolean onOff, int value, String compare) {
-        return SingleStatusRule.builder()
-                .className(TempSensor.class.getSimpleName())
-                .deviceId(String.valueOf(deviceId))
-                .ruleId(ruleId)
-                .ruleName("Test Rule - " + ruleId + " - " + deviceId + " - " + onOff)
-                .conditionId(onOff)
-                .duration(null)
-                .value(String.valueOf(value))
-                .comparator(compare)
-                .operand("indoorTemp")
-                .build();
+    @PostConstruct
+    private void init() {
+        createTargetDevices();
+    }
+
+    private void createTargetDevices() {
+        for (int i = 0; i < 100; i++) {
+            Device device = new Device(DeviceType.AIR_CONDITIONER, false);
+            addDevice(device);
+        }
     }
 
     public void addDevice(Device device) {

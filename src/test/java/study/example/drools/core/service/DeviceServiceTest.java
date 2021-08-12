@@ -36,7 +36,7 @@ class DeviceServiceTest {
     void airConditionerOnTest() {
         final Device device = Device.createAirConditioner(false);
         deviceService.addDevice(device);
-        final SingleStatusRule rule = DeviceService.createRule(3, device.getId(), true, 30, ">");
+        final SingleStatusRule rule = DroolsService.createSingleStatusRule(3, device.getId(), true, 30, ">");
         droolsService.addRule3(rule);
         TempSensor tempSensor = new TempSensor(device.getId(), 35, 33, 0);
         droolsService.validateRule(tempSensor);
@@ -51,7 +51,7 @@ class DeviceServiceTest {
         deviceService.addDevice(device);
 
         droolsService.addRule3(
-                DeviceService.createRule(3, device.getId(), true, 30, ">"));
+                DroolsService.createSingleStatusRule(3, device.getId(), true, 30, ">"));
 
         for (int i = 0; i < 100; i++) {
             int temperature = 23;
@@ -70,7 +70,7 @@ class DeviceServiceTest {
         final Device device = Device.createAirConditioner(true);
         deviceService.addDevice(device);
 
-        final SingleStatusRule rule = DeviceService.createRule(1, device.getId(), false, 25, "<");
+        final SingleStatusRule rule = DroolsService.createSingleStatusRule(1, device.getId(), false, 25, "<");
         droolsService.addRule3(rule);
 
         TempSensor tempSensor = new TempSensor(device.getId(), 24, 33, 0);

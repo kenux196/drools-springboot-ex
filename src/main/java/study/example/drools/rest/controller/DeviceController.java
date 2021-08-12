@@ -10,6 +10,7 @@ import study.example.drools.core.service.DroolsService;
 import study.example.drools.rest.dto.DeviceAddRequest;
 import study.example.drools.rest.dto.DeviceStatusResponse;
 import study.example.drools.core.service.DeviceService;
+import study.example.drools.rest.dto.MonitoringDeviceInfo;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -61,7 +62,13 @@ public class DeviceController {
     }
 
     @PostMapping("/rules")
-    public ResponseEntity<?> createRule(@RequestBody SingleStatusRule singleStatusRule) {
+    public ResponseEntity<?> createRule(@RequestBody MonitoringDeviceInfo monitoringDeviceInfo) {
+        final SingleStatusRule singleStatusRule = DroolsService.createSingleStatusRule(
+                monitoringDeviceInfo.getRuleId(),
+                monitoringDeviceInfo.getDeviceId(),
+                monitoringDeviceInfo.getOperation(),
+                monitoringDeviceInfo.getTemperature(),
+                monitoringDeviceInfo.getComparator());
         droolsService.addRule3(singleStatusRule);
         return ResponseEntity.ok("oK");
     }

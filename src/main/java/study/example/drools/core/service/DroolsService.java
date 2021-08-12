@@ -63,6 +63,20 @@ public class DroolsService {
         kieSession.getKieBase().addEventListener(new CustomKieBaseListener());
     }
 
+    public static SingleStatusRule createSingleStatusRule(long ruleId, long deviceId, boolean onOff, int value, String compare) {
+        return SingleStatusRule.builder()
+                .className(TempSensor.class.getSimpleName())
+                .deviceId(String.valueOf(deviceId))
+                .ruleId(ruleId)
+                .ruleName("Test Rule - " + ruleId + " - " + deviceId + " - " + onOff)
+                .conditionId(onOff)
+                .duration(null)
+                .value(String.valueOf(value))
+                .comparator(compare)
+                .operand("indoorTemp")
+                .build();
+    }
+
     private String createRule(SingleStatusRule singleStatusRule) {
         return singleStatusTemplate.createRule(singleStatusRule);
     }
@@ -149,7 +163,7 @@ public class DroolsService {
         for (int i = 0; i < 100; i++) {
             int temperature = 23;
             int deviceId = i % 10;
-            if (i == 3) temperature = 33;
+            if (deviceId == 3) temperature = 33;
             validateRule(new TempSensor(deviceId, temperature, 35, 3));
         }
         fireAllRules();
