@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import study.example.drools.utils.ApplicationContextProvider;
 
+import java.util.List;
+
 @Slf4j
 public class RuleActionHandler {
 
@@ -28,8 +30,8 @@ public class RuleActionHandler {
         return instance;
     }
 
-    public void handler(long deviceId, boolean onOff) {
-        log.debug("RuleActionHandler callback deviceId =  " + deviceId + " 기기 상태 =  " + onOff);
-        deviceService.changeDeviceStatus(onOff);
+    public void handler(List<Long> targetDeviceIds, boolean onOff) {
+        log.debug("RuleActionHandler callback targetDevices =  " + targetDeviceIds + " 기기 상태 =  " + onOff);
+        deviceService.changeDeviceStatus(targetDeviceIds, onOff);
     }
 }

@@ -6,7 +6,7 @@ import study.example.drools.core.domain.enums.DeviceType;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -34,8 +34,15 @@ public class Device {
         this.temperature = temperature;
     }
 
-    public String getDeviceInfo() {
-        return id + "번 디바이스 : " + type.getName();
+    public void changeOperating(boolean isOperating) {
+        this.operating = isOperating;
     }
 
+    public void changeTemperature(int temperature) {
+        this.temperature = temperature;
+    }
+
+    public void assignDeviceId(long id) {
+        this.id = id;
+    }
 }

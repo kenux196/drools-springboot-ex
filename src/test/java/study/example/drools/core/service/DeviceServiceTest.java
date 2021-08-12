@@ -1,82 +1,52 @@
 package study.example.drools.core.service;
 
-import org.junit.jupiter.api.DisplayName;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.rule.FactHandle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import study.example.drools.core.domain.Device;
-import study.example.drools.core.domain.SingleStatusRule;
-import study.example.drools.core.domain.TempSensor;
+import study.example.drools.core.domain.enums.DeviceType;
+import study.example.drools.core.repository.DeviceRepository;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class DeviceServiceTest {
 
     @Autowired
-    DeviceService deviceService;
+    DeviceRepository deviceRepository;
+
     @Autowired
-    DroolsService droolsService;
+    DeviceService deviceService;
 
     @Test
-    @DisplayName("기기 추가 테스트")
-    void addDeviceTest() {
-        final Device device = Device.createAirConditioner(false);
-        deviceService.addDevice(device);
-        droolsService.fireAllRules();
-        final Collection<FactHandle> factHandles = droolsService.getFactHandles();
-        assertThat(factHandles).hasSize(1);
+    void addDevice() {
+        int deviceCount = deviceService.getDeviceCount();
+        deviceService.addDevice(Device.createAirConditioner(false));
+        int deviceCount1 = deviceService.getDeviceCount();
+        assertThat(deviceCount1).isEqualTo(deviceCount + 1);
     }
 
     @Test
-    @DisplayName("온도가 30도 이상이면 에어컨 켠다.")
-    void airConditionerOnTest() {
-        final Device device = Device.createAirConditioner(false);
-        deviceService.addDevice(device);
-        final SingleStatusRule rule = DroolsService.createSingleStatusRule(3, device.getId(), true, 30, ">");
-        droolsService.addRule3(rule);
-        TempSensor tempSensor = new TempSensor(device.getId(), 35, 33, 0);
-        droolsService.validateRule(tempSensor);
-        droolsService.fireAllRules();
-        assertThat(device.getOperating()).isTrue();
+    void getDeviceByType() {
+        List<Device> result = deviceService.getDeviceByType(DeviceType.AIR_CONDITIONER);
+        assertThat(result).size().isNotEqualTo(0);
+        assertThat(result.get(0).getType()).isEqualTo(DeviceType.AIR_CONDITIONER);
     }
 
     @Test
-    @DisplayName("룰 추가 테스트")
-    void addRuleTest() throws InterruptedException {
-        final Device device = Device.createAirConditioner(false);
-        deviceService.addDevice(device);
-
-        droolsService.addRule3(
-                DroolsService.createSingleStatusRule(3, device.getId(), true, 30, ">"));
-
-        for (int i = 0; i < 100; i++) {
-            int temperature = 23;
-            int deviceId = i % 10;
-            if (deviceId == device.getId()) temperature = 33;
-            final TempSensor tempSensor = new TempSensor(i, temperature, 35, 3);
-            droolsService.validateRule(tempSensor);
-        }
-        droolsService.fireAllRules();
-        assertThat(device.getOperating()).isTrue();
+    void changeDeviceStatus() {
+        List<Device> result = deviceService.getDeviceByType(DeviceType.AIR_CONDITIONER);
+        assertThat(result).size().isNotEqualTo(0).isGreaterThanOrEqualTo(10);
+        assertThat(result.get(0).getType()).isEqualTo(DeviceType.AIR_CONDITIONER);
+        List<Long> ids = result.stream()
+                .map(Device::getId)
+                .filter(id -> id < 10)
+                .collect(Collectors.toList());
+        deviceService.changeDeviceStatus(ids, true);
     }
-
-    @Test
-    @DisplayName("온도가 25도 미만이면 에어컨 끈다")
-    void airConditionerOffTest() {
-        final Device device = Device.createAirConditioner(true);
-        deviceService.addDevice(device);
-
-        final SingleStatusRule rule = DroolsService.createSingleStatusRule(1, device.getId(), false, 25, "<");
-        droolsService.addRule3(rule);
-
-        TempSensor tempSensor = new TempSensor(device.getId(), 24, 33, 0);
-        droolsService.validateRule(tempSensor);
-        droolsService.fireAllRules();
-        assertThat(device.getOperating()).isFalse();
-    }
-
 }
