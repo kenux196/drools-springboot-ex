@@ -49,8 +49,6 @@ public class DroolsService {
     private KieSession kieSession;
     private final SingleStatusTemplate singleStatusTemplate;
 
-    private final TempSensor tempSensor = new TempSensor();
-
     @PostConstruct
     private void initService() {
         kBase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -97,40 +95,6 @@ public class DroolsService {
         Collection<KnowledgePackage> packages = builder.getKnowledgePackages();
         kBase.addKnowledgePackages(packages);
         return true;
-    }
-
-    public KieSession addRule2(SingleStatusRule singleStatusRule) {
-        final String rule = createRule(singleStatusRule);
-        final KieSession kieSessionFromDRL = createKieSessionFromDRL(rule);
-        return kieSessionFromDRL;
-    }
-
-    private KieSession createKieSessionFromDRL(String drl) {
-        final KieHelper kieHelper = new KieHelper();
-        kieHelper.addContent(drl, ResourceType.DRL);
-        final Results results = kieHelper.verify();
-        if (results.hasMessages(Message.Level.WARNING, Message.Level.ERROR)) {
-            final List<Message> messages = results.getMessages(Message.Level.WARNING, Message.Level.ERROR);
-            for (Message message : messages) {
-                log.error("Error: " + message.getText());
-            }
-            throw new IllegalStateException("Compilation errors were found. Check the logs.");
-        }
-        return kieHelper.build().newKieSession();
-    }
-
-    public void validateRule(int temp) {
-        log.debug("온도 센서 값 변경 = " + temp);
-        tempSensor.setIndoorTemp(temp);
-        FactHandle factHandle = kieSession.getFactHandle(tempSensor);
-        if (factHandle != null) {
-            kieSession.update(factHandle, tempSensor); // update exist fact
-            log.debug("온도 센서 Fact 업데이트");
-        } else {
-            kieSession.insert(tempSensor); // insert new fact
-            log.debug("온도 센서 Fact 추가");
-        }
-        printFactSize("온도 값 변경 완료", false);
     }
 
     public void validateRule(TempSensor tempSensor) {

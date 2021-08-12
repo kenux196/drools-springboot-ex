@@ -20,21 +20,16 @@ public class DeviceService {
     private final SingleStatusTemplate singleStatusTemplate;
     private final TempSensor tempSensor = new TempSensor();
 
-
-    private SingleStatusRule getSingleStatusRule() {
-        final long conditionId = 10;
-        final long ruleId = 10;
-        final int deviceId = 3;
-        final String ruleName = "RES-" + ruleId + "-" + conditionId;
+    public static SingleStatusRule createRule(long ruleId, long deviceId, boolean onOff, int value, String compare) {
         return SingleStatusRule.builder()
                 .className(TempSensor.class.getSimpleName())
                 .deviceId(String.valueOf(deviceId))
                 .ruleId(ruleId)
-                .ruleName(ruleName)
-                .conditionId(conditionId)
+                .ruleName("Test Rule - " + ruleId + " - " + deviceId + " - " + onOff)
+                .conditionId(onOff)
                 .duration(null)
-                .value("30")
-                .comparator(">")
+                .value(String.valueOf(value))
+                .comparator(compare)
                 .operand("indoorTemp")
                 .build();
     }
@@ -43,18 +38,13 @@ public class DeviceService {
         deviceRepository.addDevice(device);
     }
 
-    public void addDeviceOnlyRepository(Device device) {
-        deviceRepository.addDevice(device);
-    }
-
-
     public List<Device> getDevices() {
         return deviceRepository.getDeviceList();
     }
 
-    public void changeDeviceStatus() {
+    public void changeDeviceStatus(boolean onOff) {
         for (Device device : getDevices()) {
-            device.setOperating(true);
+            device.setOperating(onOff);
         }
     }
 }

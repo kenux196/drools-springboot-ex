@@ -10,7 +10,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TempSensor {
-    private int deviceId;
+    private long deviceId;
     private int indoorTemp;
     private int outdoorTemp;
     private int airQuality;

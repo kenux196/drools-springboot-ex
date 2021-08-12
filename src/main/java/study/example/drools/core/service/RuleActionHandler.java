@@ -29,8 +29,8 @@ public class RuleActionHandler {
         return instance;
     }
 
-    public void handler(long deviceId, long temp) {
-        log.debug("RuleActionHandler callback deviceId =  " + deviceId + " 온도 =  " + temp);
-        deviceService.changeDeviceStatus();
+    public void handler(long deviceId, boolean onOff) {
+        log.debug("RuleActionHandler callback deviceId =  " + deviceId + " 기기 상태 =  " + onOff);
+        deviceService.changeDeviceStatus(onOff);
     }
 }

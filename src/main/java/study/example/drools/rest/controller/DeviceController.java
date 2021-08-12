@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import study.example.drools.core.domain.Device;
 import study.example.drools.core.domain.SingleStatusRule;
+import study.example.drools.core.domain.TempSensor;
 import study.example.drools.core.service.DroolsService;
 import study.example.drools.rest.dto.DeviceAddRequest;
 import study.example.drools.rest.dto.DeviceStatusResponse;
@@ -45,8 +46,10 @@ public class DeviceController {
     }
 
     @GetMapping("/sensor")
-    public ResponseEntity<?> changeSensorValue(@RequestParam("value") int value) {
-        droolsService.validateRule(value);
+    public ResponseEntity<?> changeSensorValue(@RequestParam("value") int value,
+                                               @RequestParam("deviceId") int deviceId) {
+        TempSensor tempSensor = new TempSensor(deviceId, value, 39, 3);
+        droolsService.validateRule(tempSensor);
         droolsService.fireAllRules();
         return ResponseEntity.ok("온도 값 설정 완료");
     }

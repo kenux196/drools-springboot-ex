@@ -21,7 +21,7 @@ public class SingleStatusRule implements Serializable {
      * Condition Id
      */
     @NonNull
-    private Long conditionId;
+    private Boolean conditionId;
 
     /**
      * Device ID
