@@ -1,7 +1,6 @@
 package study.example.drools.core.repository;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.PostMapping;
 import study.example.drools.core.domain.Device;
 import study.example.drools.core.domain.enums.DeviceType;
 
