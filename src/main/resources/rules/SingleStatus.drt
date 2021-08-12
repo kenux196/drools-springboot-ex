@@ -1,0 +1,29 @@
+template header
+    RULE_ID
+    CONDITION_ID
+    DEVICE_ID
+    DURATION
+    OPERAND
+    GETTER_OPERAND
+    COMPARATOR
+    VALUE
+    RULE_NAME
+    CLASS_NAME
+
+package study.example.drools.rule
+
+import study.example.drools.domain.*
+import study.example.drools.service.RuleActionHandler
+
+template "RuleForSingleStatus"
+
+rule "@{RULE_NAME}"
+//    timer ( int: @{DURATION}s )
+    when
+        @{CLASS_NAME}(deviceId == @{DEVICE_ID}, @{OPERAND} @{COMPARATOR} @{VALUE} );
+    then
+        System.out.println("**********SingleStatus**************  " + @{RULE_ID} +  " " + @{CONDITION_ID} );
+        RuleActionHandler.getInstance().handler(@{RULE_ID},@{CONDITION_ID});
+
+end
+end template

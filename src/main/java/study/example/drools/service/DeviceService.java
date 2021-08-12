@@ -2,21 +2,41 @@ package study.example.drools.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderErrors;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatelessKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 import org.springframework.stereotype.Service;
 import study.example.drools.domain.Device;
+import study.example.drools.domain.SingleStatusRule;
 import study.example.drools.domain.TempSensor;
 import study.example.drools.listener.CustomAgendaEventListener;
-import study.example.drools.listener.CustomRuleRunTimeEventListener;
+import study.example.drools.listener.CustomKieBaseListener;
 import study.example.drools.listener.CustomProcessEventListener;
+import study.example.drools.listener.CustomRuleRunTimeEventListener;
 import study.example.drools.repository.DeviceRepository;
+import study.example.drools.template.SingleStatusTemplate;
 
 import javax.annotation.PostConstruct;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,17 +61,46 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeviceService {
 
-    private final KieContainer kieContainer;
-    private final KieSession kieSession;
+    private KnowledgeBase kBase;
+    private StatelessKnowledgeSession kSession;
+    private KieServices kieServices;
+    private KieContainer kieContainer;
+    private KieSession kieSession;
     private final DeviceRepository deviceRepository;
+    private final SingleStatusTemplate singleStatusTemplate;
 
     private final TempSensor tempSensor = new TempSensor();
 
     @PostConstruct
     private void initService() {
+        kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        kSession = kBase.newStatelessKnowledgeSession();
+        KieBase base = kSession.getKieBase();
+        kieSession = base.newKieSession();
+//        kieServices = KieServices.Factory.get();
+//        kieSession = addRule2(getSingleStatusRule());
         kieSession.addEventListener(new CustomAgendaEventListener());
         kieSession.addEventListener(new CustomRuleRunTimeEventListener());
         kieSession.addEventListener(new CustomProcessEventListener());
+        kieSession.getKieBase().addEventListener(new CustomKieBaseListener());
+    }
+
+    private SingleStatusRule getSingleStatusRule() {
+        final long conditionId = 10;
+        final long ruleId = 10;
+        final int deviceId = 3;
+        final String ruleName = "RES-" + ruleId + "-" + conditionId;
+        return SingleStatusRule.builder()
+                .className(TempSensor.class.getSimpleName())
+                .deviceId(String.valueOf(deviceId))
+                .ruleId(ruleId)
+                .ruleName(ruleName)
+                .conditionId(conditionId)
+                .duration(null)
+                .value("30")
+                .comparator(">")
+                .operand("indoorTemp")
+                .build();
     }
 
     public FactHandle addDevice(Device device) {
@@ -60,6 +109,60 @@ public class DeviceService {
 //        fireAllRules();
         printFactSize("기기 추가 => " + device.getDeviceInfo(), false);
         return factHandle;
+    }
+
+    private String createRule(SingleStatusRule singleStatusRule) {
+        return singleStatusTemplate.createRule(singleStatusRule);
+    }
+
+    public void addRule(SingleStatusRule singleStatusRule) {
+        final String rule = createRule(singleStatusRule);
+        final Resource resource = kieServices.getResources().newReaderResource(new StringReader(rule));
+
+        KieFileSystem kfs = kieServices.newKieFileSystem();
+        kfs.write("src/main/resources/rules/test.drl", resource);
+        KieBuilder kieBuilder = kieServices.newKieBuilder(kfs).buildAll();
+        final Results results = kieBuilder.getResults();
+        if (results.hasMessages(Message.Level.ERROR)) {
+            log.error(results.getMessages().toString());
+            throw new IllegalStateException("==== errors ===");
+        }
+    }
+
+    public boolean addRule3(SingleStatusRule singleStatusRule) {
+        final String rule = createRule(singleStatusRule);
+        Resource myResource = ResourceFactory.newReaderResource(new StringReader(rule));
+        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        builder.add(myResource, ResourceType.DRL);
+        if (builder.hasErrors()) {
+            KnowledgeBuilderErrors error = builder.getErrors();
+            log.error(error.toString());
+            return false;
+        }
+        Collection<KnowledgePackage> packages = builder.getKnowledgePackages();
+        kBase.addKnowledgePackages(packages);
+        return true;
+    }
+
+    public KieSession addRule2(SingleStatusRule singleStatusRule) {
+        final String rule = createRule(singleStatusRule);
+        final KieSession kieSessionFromDRL = createKieSessionFromDRL(rule);
+        return kieSessionFromDRL;
+    }
+
+    private KieSession createKieSessionFromDRL(String drl) {
+        final KieHelper kieHelper = new KieHelper();
+        kieHelper.addContent(drl, ResourceType.DRL);
+        final Results results = kieHelper.verify();
+        if (results.hasMessages(Message.Level.WARNING, Message.Level.ERROR)) {
+            final List<Message> messages = results.getMessages(Message.Level.WARNING, Message.Level.ERROR);
+            for (Message message : messages) {
+                log.error("Error: " + message.getText());
+            }
+            throw new IllegalStateException("Compilation errors were found. Check the logs.");
+        }
+        return kieHelper.build().newKieSession();
     }
 
     public void addDeviceOnlyRepository(Device device) {
@@ -77,7 +180,6 @@ public class DeviceService {
             kieSession.insert(tempSensor); // insert new fact
             log.debug("온도 센서 Fact 추가");
         }
-//        fireAllRules();
         printFactSize("온도 값 변경 완료", false);
     }
 
@@ -92,7 +194,6 @@ public class DeviceService {
             kieSession.insert(tempSensor); // insert new fact
             log.debug("온도 센서 Fact 추가");
         }
-//        fireAllRules();
         printFactSize("온도 값 변경 완료", false);
     }
 

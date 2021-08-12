@@ -1,3 +1,4 @@
+package study.example.drools
 
 import study.example.drools.domain.Device
 import study.example.drools.domain.TempSensor

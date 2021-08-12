@@ -1,12 +1,12 @@
 package study.example.drools.service;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.rule.FactHandle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import study.example.drools.domain.Device;
+import study.example.drools.domain.SingleStatusRule;
 import study.example.drools.domain.TempSensor;
 
 import java.util.Collection;
@@ -68,6 +68,38 @@ class DeviceServiceTest {
         assertThat(device.getOperating()).isTrue();
     }
 
+    @Test
+    @DisplayName("룰 추가 테스트")
+    void addRuleTest() {
+        final Device device = Device.createAirConditioner(false);
+        deviceService.addDeviceOnlyRepository(device);
+
+        final long conditionId = 10;
+        final long ruleId = 10;
+        final String ruleName = "RES-" + ruleId + "-" + conditionId;
+        deviceService.addRule3(
+                SingleStatusRule.builder()
+                        .className(TempSensor.class.getSimpleName())
+                        .deviceId("3")
+                        .ruleId(ruleId)
+                        .ruleName(ruleName)
+                        .conditionId(conditionId)
+                        .duration(null)
+                        .value("30")
+                        .comparator(">")
+                        .operand("indoorTemp")
+                        .build());
+
+        for (int i = 0; i < 100; i++) {
+            int temperature = 23;
+            int deviceId = i % 10;
+            if (i  == 3) temperature = 33;
+            final TempSensor tempSensor = new TempSensor(i, temperature, 35, 3);
+            deviceService.updateSensorData(tempSensor);
+        }
+        deviceService.fireAllRules();
+        assertThat(device.getOperating()).isTrue();
+    }
 
     @Test
     @DisplayName("온도가 30도 미만이면 에어컨 끈다")

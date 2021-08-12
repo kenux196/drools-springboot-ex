@@ -19,7 +19,7 @@ repositories {
 }
 
 ext {
-	droolsVersion = "7.26.0.Final"
+	droolsVersion = "7.0.0.Final"
 }
 
 dependencies {
