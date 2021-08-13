@@ -27,6 +27,9 @@ class RuleServiceTest {
     @Autowired
     DeviceService deviceService;
 
+    @Autowired
+    DroolsService droolsService;
+
     @Test
     void createRuleTest() throws Exception {
         final List<Device> devices = deviceService.getDevices();
@@ -42,7 +45,7 @@ class RuleServiceTest {
                 .build();
 
         final ConditionDto conditionDto = ConditionDto.builder()
-                .operand("indoorTemp")
+                .operand("temperature")
                 .comparator(">")
                 .value("30")
                 .devices(Collections.singletonList(monitoringDeviceDto))
@@ -73,5 +76,6 @@ class RuleServiceTest {
 
         ruleService.createRule(ruleDto);
 
+        droolsService.validateForce();
     }
 }

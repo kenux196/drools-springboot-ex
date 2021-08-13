@@ -169,6 +169,10 @@ public class DroolsService {
         fireAllRules();
     }
 
+    public void validateForce() {
+        validateRules();
+    }
+
     public boolean executeDevice(Set<Device> devices) {
         try {
             // Updating the facts in current session.
