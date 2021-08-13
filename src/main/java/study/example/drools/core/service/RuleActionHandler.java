@@ -9,9 +9,6 @@ import java.util.Set;
 @Slf4j
 public class RuleActionHandler {
 
-    /**
-     * The constant instance.
-     */
     protected static RuleActionHandler instance = null;
 //    private final Set<Long> ruleSet;
 

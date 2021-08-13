@@ -92,8 +92,6 @@ public class RuleService {
 
         droolsService.createDroolsRule(rule);
 
-//        droolsService.validateForce();
-
         return rule.getRuleId();
     }
 

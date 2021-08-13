@@ -46,21 +46,4 @@ class DeviceServiceTest {
         assertThat(result).size().isNotEqualTo(0);
         assertThat(result.get(0).getType()).isEqualTo(DeviceType.AIR_CONDITIONER);
     }
-//
-//    @Test
-//    void changeDeviceStatus() {
-//        List<Device> result = deviceService.getDeviceByType(DeviceType.AIR_CONDITIONER);
-//        assertThat(result).size().isNotEqualTo(0).isGreaterThanOrEqualTo(10);
-//        assertThat(result.get(0).getType()).isEqualTo(DeviceType.AIR_CONDITIONER);
-//        List<Long> ids = result.stream()
-//                .map(Device::getId)
-//                .filter(id -> id < 10)
-//                .collect(Collectors.toList());
-//        deviceService.changeDeviceStatus(ids, true);
-//
-//        final List<Device> devices = deviceService.getDeviceByType(DeviceType.AIR_CONDITIONER);
-//        assertThat(devices).size().isNotEqualTo(0).isGreaterThanOrEqualTo(10);
-//        assertThat(devices.get(0).getType()).isEqualTo(DeviceType.AIR_CONDITIONER);
-//        assertThat(devices.get(0).getOperating()).isTrue();
-//    }
 }
