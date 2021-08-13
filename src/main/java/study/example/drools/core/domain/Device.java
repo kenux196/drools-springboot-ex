@@ -27,10 +27,12 @@ public class Device {
     private Integer temperature;
 
     @OneToMany(mappedBy = "device")
-    private List<RuleDevice> ruleDevices;
+    @Builder.Default
+    private List<RuleDevice> ruleDevices = new ArrayList<>();
 
     @OneToMany(mappedBy = "device")
-    private List<RuleConditionDevice> ruleConditionDevices;
+    @Builder.Default
+    private List<ConditionDevice> conditionDevices = new ArrayList<>();
 
     public static Device createAirConditioner(boolean operating) {
         return new Device(DeviceType.AIR_CONDITIONER, operating);

@@ -24,11 +24,14 @@ public class Rule {
     private String desc;
 
     @OneToMany(mappedBy = "rule")
+    @Builder.Default
     private List<RuleDevice> ruleDevices = new ArrayList<>();
 
     @OneToMany(mappedBy = "rule")
-    private List<RuleCondition> ruleConditions;
+    @Builder.Default
+    private List<Condition> conditions = new ArrayList<>();
 
     @OneToMany(mappedBy = "rule")
-    private List<RuleOperation> ruleOperations;
+    @Builder.Default
+    private List<Operation> operations = new ArrayList<>();
 }

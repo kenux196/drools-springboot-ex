@@ -1,19 +1,18 @@
 package study.example.drools.core.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Getter
 @Entity
 @Table(name = "rule_condition")
-public class RuleCondition {
+public class Condition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +24,13 @@ public class RuleCondition {
 
     private String value;
 
-    @OneToMany(mappedBy = "ruleCondition")
-    private List<RuleConditionDevice> ruleConditionDevices;
+    @OneToMany(mappedBy = "condition")
+    @Builder.Default
+    private List<ConditionDevice> conditionDevices = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rule_id")
     private Rule rule;
+
+
 }

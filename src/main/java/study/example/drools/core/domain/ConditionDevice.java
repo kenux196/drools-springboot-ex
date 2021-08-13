@@ -7,21 +7,20 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @Builder
 @Entity
-@Table(name = "rule_device")
-public class RuleDevice {
-
+@Table(name = "rule_condition_device")
+public class ConditionDevice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "rule_id")
-    private Rule rule;
+    @JoinColumn(name = "condition_id")
+    private Condition condition;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "device_id")
@@ -29,17 +28,17 @@ public class RuleDevice {
 
     public void changeDevice(Device device) {
 //        if (this.device != null) {
-//            this.device.getRuleDevices().remove(this);
+//            this.device.getConditionDevices().remove(this);
 //        }
         this.device = device;
-//        device.getRuleDevices().add(this);
+//        device.getConditionDevices().add(this);
     }
 
-    public void changeRule(Rule rule) {
-        if (this.rule != null) {
-            this.rule.getRuleDevices().remove(this);
+    public void changeCondition(Condition condition) {
+        if (this.condition != null) {
+            this.condition.getConditionDevices().remove(this);
         }
-        this.rule = rule;
-        rule.getRuleDevices().add(this);
+        this.condition = condition;
+        condition.getConditionDevices().add(this);
     }
 }
