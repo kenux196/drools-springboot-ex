@@ -27,7 +27,7 @@ class DeviceServiceTest {
 
     @Test
     void addDevice() {
-        final Device airConditioner = Device.createAirConditioner(true);
+        final Device airConditioner = Device.createAirConditioner("on");
         final Device saveDevice = deviceService.addDevice(airConditioner);
 
         final Optional<Device> findDevice = deviceService.getDevice(saveDevice.getDeviceId());
@@ -36,7 +36,7 @@ class DeviceServiceTest {
                 .hasValueSatisfying(d -> {
                     assertThat(d.getDeviceId()).isEqualTo(saveDevice.getDeviceId());
                     assertThat(d.getType()).isEqualTo(DeviceType.AIR_CONDITIONER);
-                    assertThat(d.getOperating()).isTrue();
+                    assertThat(d.getOperating()).isEqualTo("on");
                 });
     }
 

@@ -11,9 +11,7 @@ import study.example.drools.rest.dto.DeviceDto;
 import study.example.drools.rest.dto.OperationDto;
 import study.example.drools.rest.dto.RuleDto;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j

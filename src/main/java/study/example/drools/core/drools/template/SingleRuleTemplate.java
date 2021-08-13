@@ -6,9 +6,8 @@ import org.drools.template.DataProviderCompiler;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import study.example.drools.core.domain.Condition;
 import study.example.drools.core.domain.Device;
-import study.example.drools.core.domain.SingleStatusRule;
+import study.example.drools.core.domain.SingleRule;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -19,11 +18,11 @@ import java.util.*;
 
 @Slf4j
 @Component
-public class SingleStatusTemplate {
+public class SingleRuleTemplate {
 
-    private static class SingleStatusDataProvider implements DataProvider {
+    private static class SingleRuleDataProvider implements DataProvider {
 
-        private Iterator<SingleStatusRule> iterator;
+        private Iterator<SingleRule> iterator;
 
         /**
          * Instantiates a new Single status data provider.
@@ -31,7 +30,7 @@ public class SingleStatusTemplate {
          *
          * @param rows the rows
          */
-        SingleStatusDataProvider(List<SingleStatusRule> rows) {
+        SingleRuleDataProvider(List<SingleRule> rows) {
             this.iterator = rows.iterator();
         }
 
@@ -40,14 +39,13 @@ public class SingleStatusTemplate {
         }
 
         public String[] next() {
-            SingleStatusRule next = iterator.next();
+            SingleRule next = iterator.next();
             return new String[]{
                     String.valueOf(next.getRuleId()),
                     String.valueOf(next.getConditionId()),
                     next.getDeviceId(),
                     String.valueOf(next.getDuration()),
                     next.getOperand(),
-                    next.getGetterOperand(),
                     next.getComparator(),
                     next.getValue(),
                     next.getRuleName(),
@@ -55,43 +53,14 @@ public class SingleStatusTemplate {
         }
     }
 
-//    public String createRule(Condition condition, String ruleName, Long conditionId, Long ruleId) {
-//
-//        HashMap<String, String> classDetails = getClassDetails(condition.getMonitor());
-//        String methodName = classDetails.get("method");
-//        String className = classDetails.get("className");
-//
-//        Set<Device> devices = condition.get;
-//        Long deviceId = devices.iterator().next().getId();
-//        Long time = RESUtility.getTimeInSecond(condition.getDuration()); //P10M
-//        // Set the data which is required in Rule Template
-//        SingleStatusRule rule = SingleStatusRule.builder()
-//                .ruleId(ruleId)
-//                .conditionId(conditionId)
-//                .deviceId(String.valueOf(deviceId))
-//                .operand(condition.getMonitor().toString())
-//                .getterOperand(methodName)
-//                .comparator(RESUtility.getOperatorBasedMonitor(condition.getMonitor(), condition.getValue(),
-//                        condition.getOperator()))
-//                .value(RESUtility.getValueBasedMonitor(condition.getMonitor(), condition.getValue()))
-//                .duration(time)
-//                .ruleName(ruleName)
-//                .className(className)
-//                .build();
-//
-//        return createRule(rule);
-//
-//    }
+    public String createRule(SingleRule rule) {
 
-    public String createRule(SingleStatusRule rule) {
-
-        ArrayList<SingleStatusRule> rules = new ArrayList<>();
+        ArrayList<SingleRule> rules = new ArrayList<>();
         rules.add(rule);
 
-        SingleStatusDataProvider tdp = new SingleStatusDataProvider(rules);
+        SingleRuleDataProvider tdp = new SingleRuleDataProvider(rules);
         final DataProviderCompiler converter = new DataProviderCompiler();
-        InputStream is = getDroolTemplate("rules/SingleStatus.drt");
-        // Compile the rule to create it
+        InputStream is = getDroolTemplate("rules/SingleRule.drt");
         final String drl = converter.compile(tdp, is);
         log.info(drl);
         return drl;

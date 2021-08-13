@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -30,7 +31,7 @@ public class DeviceService {
         List<Device> devices = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            devices.add(Device.createAirConditioner(false));
+            devices.add(Device.createAirConditioner("off"));
         }
 
         for (int i = 0; i < 2; i++) {
@@ -56,20 +57,22 @@ public class DeviceService {
         return deviceRepository.findById(deviceId);
     }
 
-    public void changeAllAirConditionerDeviceStatus(boolean onOff) {
+    public void changeAllAirConditionerDeviceStatus(String status) {
         final List<Device> airConditioners = getDeviceByType(DeviceType.AIR_CONDITIONER);
-        airConditioners.forEach(device -> device.changeOperating(onOff));
+        airConditioners.forEach(device -> device.changeOperating(status));
         deviceRepository.saveAll(airConditioners);
     }
 
-    public void changeAllDeviceStatus(List<Long> deviceId, boolean onOff) {
-        final List<Device> devices = deviceRepository.findAllById(deviceId);
-        devices.forEach(device -> device.changeOperating(onOff));
+    public void changeAllDeviceStatus(Set<Device> devices, String status) {
+        devices.forEach(device -> device.changeOperating(status));
         deviceRepository.saveAll(devices);
     }
 
     public void changeDeviceStatus(long devicId, long conditionId) {
         log.info("changeDeviceStatus~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ impl");
+
+
+
     }
 
     public long getDeviceCount() {

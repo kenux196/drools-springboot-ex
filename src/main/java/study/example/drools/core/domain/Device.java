@@ -24,7 +24,7 @@ public class Device {
     @Enumerated(EnumType.STRING)
     private DeviceType type;
 
-    private Boolean operating;
+    private String operating;
 
     private Integer temperature;
 
@@ -36,7 +36,7 @@ public class Device {
     @Builder.Default
     private List<ConditionDevice> conditionDevices = new ArrayList<>();
 
-    public static Device createAirConditioner(boolean operating) {
+    public static Device createAirConditioner(String operating) {
         return new Device(DeviceType.AIR_CONDITIONER, operating);
     }
 
@@ -44,7 +44,7 @@ public class Device {
         return new Device(DeviceType.AIR_QUALITY_SENSOR, temperature);
     }
 
-    public Device(DeviceType type, boolean operating) {
+    public Device(DeviceType type, String operating) {
         this.type = type;
         this.operating = operating;
     }
@@ -54,7 +54,7 @@ public class Device {
         this.temperature = temperature;
     }
 
-    public void changeOperating(boolean isOperating) {
+    public void changeOperating(String isOperating) {
         this.operating = isOperating;
     }
 

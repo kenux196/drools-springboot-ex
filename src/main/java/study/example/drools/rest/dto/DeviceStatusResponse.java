@@ -11,5 +11,5 @@ import java.io.Serializable;
 public class DeviceStatusResponse implements Serializable {
     private Long id;
     private DeviceType type;
-    private Boolean operation;
+    private String operation;
 }

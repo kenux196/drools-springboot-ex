@@ -28,7 +28,7 @@ class RuleConditionRepositoryTest {
         Device device = Device.builder()
                 .type(DeviceType.AIR_CONDITIONER)
                 .temperature(20)
-                .operating(false)
+                .operating("off")
                 .build();
         deviceRepository.save(device);
 

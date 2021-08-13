@@ -4,7 +4,6 @@ template header
     DEVICE_ID
     DURATION
     OPERAND
-    GETTER_OPERAND
     COMPARATOR
     VALUE
     RULE_NAME
@@ -13,16 +12,16 @@ template header
 package study.example.drools.core.rule
 
 import study.example.drools.core.domain.*
-import study.example.drools.core.service.RuleActionHandler
+import study.example.drools.core.drools.callback.RuleActionHandler
 
-template "RuleForSingleStatus"
+template "RuleForSingle"
 
 rule "@{RULE_NAME}"
 //    timer ( int: @{DURATION}s )
     when
         @{CLASS_NAME}(deviceId == @{DEVICE_ID}, @{OPERAND} @{COMPARATOR} @{VALUE} );
     then
-        System.out.println("**********SingleStatus**************  " + @{RULE_ID} + " - " + @{CONDITION_ID} );
+        System.out.println("**********SingleRule**************  " + @{RULE_ID} + " - " + @{CONDITION_ID} );
         RuleActionHandler.getInstance().handler(@{RULE_ID}, @{CONDITION_ID});
 
 end

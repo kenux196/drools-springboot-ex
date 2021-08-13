@@ -28,7 +28,7 @@ public class RuleController {
     @PostMapping("/device")
     public ResponseEntity<?> addDevice(@RequestBody @Valid DeviceAddRequest request) {
         for (int i = 0; i < request.getDeviceCount(); i++) {
-            final Device airConditioner = Device.createAirConditioner(false);
+            final Device airConditioner = Device.createAirConditioner("off");
             deviceService.addDevice(airConditioner);
         }
         return ResponseEntity.ok("Added device count : " + deviceService.getDevices().size());

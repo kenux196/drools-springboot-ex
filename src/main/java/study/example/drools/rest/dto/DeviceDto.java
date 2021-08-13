@@ -18,7 +18,7 @@ public class DeviceDto implements Serializable {
 
     private DeviceType type;
 
-    private Boolean operating;
+    private String operating;
 
     private Integer temperature;
 }

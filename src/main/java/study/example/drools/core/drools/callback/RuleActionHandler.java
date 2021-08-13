@@ -1,22 +1,20 @@
-package study.example.drools.core.service;
+package study.example.drools.core.drools.callback;
 
 
 import lombok.extern.slf4j.Slf4j;
+import study.example.drools.core.service.DeviceService;
+import study.example.drools.core.service.DroolsService;
+import study.example.drools.core.service.RuleService;
 import study.example.drools.utils.ApplicationContextProvider;
-
-import java.util.Set;
 
 @Slf4j
 public class RuleActionHandler {
 
     protected static RuleActionHandler instance = null;
-//    private final Set<Long> ruleSet;
-
-    private final DeviceService deviceService;
+    private final DroolsService droolsService;
 
     private RuleActionHandler() {
-        deviceService = ApplicationContextProvider.getApplicationContext().getBean(DeviceService.class);
-
+        droolsService = ApplicationContextProvider.getApplicationContext().getBean(DroolsService.class);
     }
 
     public static synchronized RuleActionHandler getInstance() {
@@ -30,6 +28,6 @@ public class RuleActionHandler {
 
     public void handler(long ruleId, long conditionId) {
         log.info("RuleActionHandler callback ruleId =  " + ruleId + " conditionId =  " + conditionId);
-        deviceService.changeDeviceStatus(ruleId, conditionId);
+        droolsService.addFiredRule(ruleId);
     }
 }

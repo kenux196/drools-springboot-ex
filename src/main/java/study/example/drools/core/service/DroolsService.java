@@ -3,7 +3,6 @@ package study.example.drools.core.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.Resource;
@@ -22,16 +21,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import study.example.drools.core.domain.ConditionDevice;
 import study.example.drools.core.domain.Device;
-import study.example.drools.core.domain.SingleStatusRule;
-import study.example.drools.core.domain.TempSensor;
+import study.example.drools.core.domain.SingleRule;
 import study.example.drools.core.drools.listener.CustomAgendaEventListener;
 import study.example.drools.core.drools.listener.CustomKieBaseListener;
 import study.example.drools.core.drools.listener.CustomProcessEventListener;
 import study.example.drools.core.drools.listener.CustomRuleRunTimeEventListener;
-import study.example.drools.core.drools.template.SingleStatusTemplate;
+import study.example.drools.core.drools.template.SingleRuleTemplate;
 import study.example.drools.core.repository.DeviceRepository;
 import study.example.drools.core.repository.RuleConditionDeviceRepository;
-import study.example.drools.core.repository.RuleConditionRepository;
 
 import javax.annotation.PostConstruct;
 import java.io.StringReader;
@@ -44,24 +41,23 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DroolsService {
 
     private KnowledgeBase kBase;
-    private StatelessKnowledgeSession kSession;
-    private KieServices kieServices;
     private KieSession kieSession;
-    private final SingleStatusTemplate singleStatusTemplate;
+    private final SingleRuleTemplate singleRuleTemplate;
 
     private ConcurrentHashMap<Long, FactHandle> factMapForDevice;
 
-    private final RuleConditionRepository ruleConditionRepository;
     private final RuleConditionDeviceRepository ruleConditionDeviceRepository;
     private final DeviceRepository deviceRepository;
+    private final RuleControlService ruleControlService;
+
+    private final Set<Long> firedRules = new HashSet<>();
 
     @PostConstruct
     private void initService() {
         kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kSession = kBase.newStatelessKnowledgeSession();
+        StatelessKnowledgeSession kSession = kBase.newStatelessKnowledgeSession();
         KieBase base = kSession.getKieBase();
         kieSession = base.newKieSession();
-//        kieServices = KieServices.Factory.get();
 
         kieSession.addEventListener(new CustomAgendaEventListener());
         kieSession.addEventListener(new CustomRuleRunTimeEventListener());
@@ -71,8 +67,8 @@ public class DroolsService {
         factMapForDevice = new ConcurrentHashMap<>();
     }
 
-    private String createRule(SingleStatusRule singleStatusRule) {
-        return singleStatusTemplate.createRule(singleStatusRule);
+    private String createRule(SingleRule singleRule) {
+        return singleRuleTemplate.createRule(singleRule);
     }
 
     public void createDroolsRule(study.example.drools.core.domain.Rule rule) {
@@ -80,7 +76,7 @@ public class DroolsService {
         rule.getConditions().forEach(condition -> {
             final ConditionDevice conditionDevice = condition.getConditionDevices().get(0);
             final Long deviceId = conditionDevice.getDevice().getDeviceId();
-            final SingleStatusRule singleStatusRule = SingleStatusRule.builder()
+            final SingleRule singleRule = SingleRule.builder()
                     .className(Device.class.getSimpleName())
                     .deviceId(String.valueOf(deviceId))
                     .ruleId(rule.getRuleId())
@@ -91,13 +87,13 @@ public class DroolsService {
                     .comparator(condition.getComparator())
                     .operand(condition.getOperand())
                     .build();
-            addRule(singleStatusRule);
+            addRule(singleRule);
         });
     }
 
-     public boolean addRule(SingleStatusRule singleStatusRule) {
+    public boolean addRule(SingleRule singleRule) {
         log.info("addRule~~~~~~~~~~~~~~~");
-        final String rule = createRule(singleStatusRule);
+        final String rule = createRule(singleRule);
         Resource myResource = ResourceFactory.newReaderResource(new StringReader(rule));
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
@@ -153,6 +149,8 @@ public class DroolsService {
         final Set<Device> devices = new HashSet<>(deviceRepository.findAllById(conditionDevices));
         executeDevice(devices);
         fireAllRules();
+
+        ruleControlService.requestDeviceControl(firedRules);
     }
 
     public void validateForce() {
@@ -160,7 +158,7 @@ public class DroolsService {
         validateRules();
     }
 
-    public boolean executeDevice(Set<Device> devices) {
+    public void executeDevice(Set<Device> devices) {
         try {
             // Updating the facts in current session.
             for (Device object : devices) {
@@ -173,10 +171,12 @@ public class DroolsService {
                 }
                 factMapForDevice.put(object.getDeviceId(), fact);
             }
-            return true;
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
         }
-        return false;
+    }
+
+    public void addFiredRule(Long ruleId) {
+        firedRules.add(ruleId);
     }
 }
