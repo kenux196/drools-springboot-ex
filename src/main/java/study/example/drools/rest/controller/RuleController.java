@@ -50,9 +50,7 @@ public class RuleController {
     @GetMapping("/sensor")
     public ResponseEntity<?> changeSensorValue(@RequestParam("value") int value,
                                                @RequestParam("deviceId") int deviceId) {
-        TempSensor tempSensor = new TempSensor(deviceId, value, 39, 3);
-        droolsService.validateRule(tempSensor);
-        droolsService.fireAllRules();
+        droolsService.validateForce();
         return ResponseEntity.ok("온도 값 설정 완료");
     }
 

@@ -76,6 +76,11 @@ class RuleServiceTest {
 
         ruleService.createRule(ruleDto);
 
-        droolsService.validateForce();
+        for (int i = 0; i < 100; i++) {
+            Thread.sleep(20000);
+            droolsService.validateForce();
+        }
+//        Thread.sleep(20000);
+//        droolsService.validateForce();
     }
 }

@@ -112,20 +112,6 @@ public class DroolsService {
         return true;
     }
 
-    public void validateRule(TempSensor tempSensor) {
-        log.debug("온도 센서 값 변경 = " + tempSensor.getIndoorTemp());
-        tempSensor.setIndoorTemp(tempSensor.getIndoorTemp());
-        FactHandle factHandle = kieSession.getFactHandle(tempSensor);
-        if (factHandle != null) {
-            kieSession.update(factHandle, tempSensor); // update exist fact
-            log.debug("온도 센서 Fact 업데이트");
-        } else {
-            kieSession.insert(tempSensor); // insert new fact
-            log.debug("온도 센서 Fact 추가");
-        }
-        printFactSize("온도 값 변경 완료", false);
-    }
-
     public void fireAllRules() {
         final int firedRuleCount = kieSession.fireAllRules();
         log.info("fired rule count = " + firedRuleCount);
@@ -170,6 +156,7 @@ public class DroolsService {
     }
 
     public void validateForce() {
+        log.info("force~~~~~~~~~~~~~~~~~");
         validateRules();
     }
 
