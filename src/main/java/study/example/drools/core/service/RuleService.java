@@ -2,8 +2,10 @@ package study.example.drools.core.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tools.ant.ExitException;
 import org.springframework.stereotype.Service;
 import study.example.drools.core.domain.*;
+import study.example.drools.core.domain.enums.DeviceType;
 import study.example.drools.core.repository.*;
 import study.example.drools.rest.dto.ConditionDto;
 import study.example.drools.rest.dto.DeviceDto;
@@ -11,7 +13,9 @@ import study.example.drools.rest.dto.OperationDto;
 import study.example.drools.rest.dto.RuleDto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,7 +31,7 @@ public class RuleService {
     private final RuleConditionDeviceRepository ruleConditionDeviceRepository;
     private final DroolsService droolsService;
 
-    public void createRule(RuleDto ruleDto) {
+    public Long createRule(RuleDto ruleDto) {
         final Rule rule = Rule.builder()
                 .name(ruleDto.getName())
                 .build();
@@ -87,13 +91,21 @@ public class RuleService {
         });
         ruleOperationRepository.saveAll(operations);
 
+        return rule.getRuleId();
     }
 
-//    private void getRuleOperation(List<OperationDto> operationDtoList) {
-//        operationDtoList.forEach(operationDto -> {
-//            operationDto.getDevices()
-//        });
-//    }
+    public List<RuleDto> getAllRules() {
+        return null;
+    }
+
+    public RuleDto getRule(Long id) throws Exception {
+//        final Rule foundRule = ruleRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("룰 못 찾음 : " + id));
+//        final RuleDto ruleDto = RuleDto.builder().build();
+//        return ruleDto;
+        return getExampleRuleDto();
+    }
+
 
     public void deleteRule(List<Long> ids) {
 
@@ -110,6 +122,51 @@ public class RuleService {
                 .value(String.valueOf(value))
                 .comparator(compare)
                 .operand("indoorTemp")
+                .build();
+    }
+
+    private RuleDto getExampleRuleDto() throws Exception {
+        final List<Device> devices = deviceRepository.findAll();
+
+        final Device monitoringDevice = devices.stream()
+                .filter(device -> device.getType().equals(DeviceType.AIR_QUALITY_SENSOR))
+                .findFirst().orElseThrow(() -> new Exception("모니터링 기기 못찾음"));
+
+        DeviceDto monitoringDeviceDto = DeviceDto.builder()
+                .id(monitoringDevice.getId())
+                .type(monitoringDevice.getType())
+                .temperature(30)
+                .build();
+
+        final ConditionDto conditionDto = ConditionDto.builder()
+                .operand("indoorTemp")
+                .comparator(">")
+                .value("30")
+                .devices(Collections.singletonList(monitoringDeviceDto))
+                .build();
+
+        final Device targetDevice = devices.stream()
+                .filter(device -> device.getType().equals(DeviceType.AIR_CONDITIONER))
+                .findFirst().orElseThrow(() -> new Exception("타겟 기기 못찾음"));
+
+        final DeviceDto targetDeviceDto = DeviceDto.builder()
+                .id(targetDevice.getId())
+                .operating(targetDevice.getOperating())
+                .temperature(targetDevice.getTemperature())
+                .type(targetDevice.getType())
+                .build();
+
+        final OperationDto operationDto = OperationDto.builder()
+                .deviceCommand("AirCondition-Power")
+                .value("on")
+                .build();
+
+        return RuleDto.builder()
+                .id(1L)
+                .name("테스트 룰 - 01010")
+                .conditions(Collections.singletonList(conditionDto))
+                .devices(Collections.singletonList(targetDeviceDto))
+                .operations(Collections.singletonList(operationDto))
                 .build();
     }
 }
