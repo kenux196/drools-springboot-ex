@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Repository
 public class DeviceRepository {
 
     private final List<Device> deviceList = new ArrayList<>();

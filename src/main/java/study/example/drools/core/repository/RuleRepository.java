@@ -7,7 +7,6 @@ import study.example.drools.core.domain.Rule;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
 public interface RuleRepository extends JpaRepository<Rule, Long> {
 
 }

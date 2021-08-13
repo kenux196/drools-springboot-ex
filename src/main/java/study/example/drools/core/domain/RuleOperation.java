@@ -19,6 +19,9 @@ public class RuleOperation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "operation")
+    private String operation;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rule_id")
     private Rule rule;

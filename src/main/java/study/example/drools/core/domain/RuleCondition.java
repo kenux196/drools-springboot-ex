@@ -25,8 +25,8 @@ public class RuleCondition {
 
     private String value;
 
-    @OneToMany(mappedBy = "device")
-    private List<Device> devices;
+    @OneToMany(mappedBy = "ruleCondition")
+    private List<RuleConditionDevice> ruleConditionDevices;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rule_id")

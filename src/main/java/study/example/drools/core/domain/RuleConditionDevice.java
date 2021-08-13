@@ -1,7 +1,16 @@
 package study.example.drools.core.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Builder
 @Entity
 @Table(name = "rule_condition_device")
 public class RuleConditionDevice {
@@ -10,7 +19,7 @@ public class RuleConditionDevice {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "condition_id")
+    @JoinColumn(name = "rule_condition_id")
     private RuleCondition ruleCondition;
 
     @ManyToOne(fetch = FetchType.LAZY)

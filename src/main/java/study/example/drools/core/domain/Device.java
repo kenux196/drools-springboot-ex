@@ -29,11 +29,8 @@ public class Device {
     @OneToMany(mappedBy = "device")
     private List<RuleDevice> ruleDevices;
 
-//    private List<RuleConditionDevice> ruleConditionDevices;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "condition_id")
-    private RuleCondition ruleCondition;
+    @OneToMany(mappedBy = "device")
+    private List<RuleConditionDevice> ruleConditionDevices;
 
     public static Device createAirConditioner(boolean operating) {
         return new Device(DeviceType.AIR_CONDITIONER, operating);
