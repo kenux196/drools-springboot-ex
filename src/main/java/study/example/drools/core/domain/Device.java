@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString(exclude = {"ruleDevices", "conditionDevices"})
 @Entity
 @Table(name = "device")
 public class Device {

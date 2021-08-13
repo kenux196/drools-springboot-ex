@@ -25,6 +25,7 @@ import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import study.example.drools.core.domain.Device;
 import study.example.drools.core.domain.SingleStatusRule;
 import study.example.drools.core.domain.TempSensor;
 import study.example.drools.core.drools.listener.CustomAgendaEventListener;
@@ -32,12 +33,15 @@ import study.example.drools.core.drools.listener.CustomKieBaseListener;
 import study.example.drools.core.drools.listener.CustomProcessEventListener;
 import study.example.drools.core.drools.listener.CustomRuleRunTimeEventListener;
 import study.example.drools.core.drools.template.SingleStatusTemplate;
+import study.example.drools.core.repository.DeviceRepository;
+import study.example.drools.core.repository.RuleConditionDeviceRepository;
+import study.example.drools.core.repository.RuleConditionRepository;
 
 import javax.annotation.PostConstruct;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -49,6 +53,12 @@ public class DroolsService {
     private KieServices kieServices;
     private KieSession kieSession;
     private final SingleStatusTemplate singleStatusTemplate;
+
+    private ConcurrentHashMap<Long, FactHandle> factMapForDevice;
+
+    private final RuleConditionRepository ruleConditionRepository;
+    private final RuleConditionDeviceRepository ruleConditionDeviceRepository;
+    private final DeviceRepository deviceRepository;
 
     @PostConstruct
     private void initService() {
@@ -62,6 +72,8 @@ public class DroolsService {
         kieSession.addEventListener(new CustomRuleRunTimeEventListener());
         kieSession.addEventListener(new CustomProcessEventListener());
         kieSession.getKieBase().addEventListener(new CustomKieBaseListener());
+
+        factMapForDevice = new ConcurrentHashMap<>();
     }
 
     public static SingleStatusRule createSingleStatusRule(long ruleId, long deviceId, boolean onOff, int value, String compare) {
@@ -163,12 +175,28 @@ public class DroolsService {
     @Scheduled(initialDelay = 20000L, fixedDelay = 20000L)
     public void validateRules() {
         log.info("validateRules ~~~~ run");
-//        for (int i = 0; i < 100; i++) {
-//            int temperature = 23;
-//            int deviceId = i % 10;
-//            if (deviceId == 3) temperature = 33;
-//            validateRule(new TempSensor(deviceId, temperature, 35, 3));
-//        }
-//        fireAllRules();
+        Set<Long> conditionDevices = ruleConditionDeviceRepository.findAllConditionDevice();
+        final Set<Device> devices = new HashSet<>(deviceRepository.findAllById(conditionDevices));
+        executeDevice(devices);
+    }
+
+    public boolean executeDevice(Set<Device> devices) {
+        try {
+            // Updating the facts in current session.
+            for (Device object : devices) {
+                FactHandle fact;
+                if (factMapForDevice.containsKey(object.getId())) {
+                    fact = factMapForDevice.get(object.getId());
+                    kieSession.update(fact, object);
+                } else {
+                    fact = kieSession.insert(object);
+                }
+                factMapForDevice.put(object.getId(), fact);
+            }
+            return true;
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
+        }
+        return false;
     }
 }
