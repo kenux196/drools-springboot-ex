@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import study.example.drools.core.domain.Device;
-import study.example.drools.core.domain.SingleStatusRule;
 import study.example.drools.core.domain.TempSensor;
 import study.example.drools.core.service.DroolsService;
 import study.example.drools.core.service.RuleService;
 import study.example.drools.rest.dto.DeviceAddRequest;
 import study.example.drools.rest.dto.DeviceStatusResponse;
 import study.example.drools.core.service.DeviceService;
-import study.example.drools.rest.dto.MonitoringDeviceInfo;
 import study.example.drools.rest.dto.RuleDto;
 
 import javax.validation.Valid;
@@ -41,7 +39,7 @@ public class RuleController {
         final List<Device> devices = deviceService.getDevices();
         final List<DeviceStatusResponse> responses = devices.stream().
                 map(device -> DeviceStatusResponse.builder()
-                        .id(device.getId())
+                        .id(device.getDeviceId())
                         .type(device.getType())
                         .operation(device.getOperating())
                         .build())

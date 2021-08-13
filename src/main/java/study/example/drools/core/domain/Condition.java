@@ -32,5 +32,12 @@ public class Condition {
     @JoinColumn(name = "rule_id")
     private Rule rule;
 
+    public void updateRule(Rule rule) {
+        if (this.rule != null) {
+            this.rule.getConditions().remove(this);
+        }
+        this.rule = rule;
+        rule.getConditions().add(this);
+    }
 
 }

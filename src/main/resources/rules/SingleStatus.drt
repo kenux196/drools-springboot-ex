@@ -22,8 +22,8 @@ rule "@{RULE_NAME}"
     when
         @{CLASS_NAME}(deviceId == @{DEVICE_ID}, @{OPERAND} @{COMPARATOR} @{VALUE} );
     then
-        System.out.println("**********SingleStatus**************  " + @{RULE_ID} +  " " + @{CONDITION_ID} );
-        RuleActionHandler.getInstance().handler(@{RULE_ID},@{CONDITION_ID});
+        System.out.println("**********SingleStatus**************  " + @{RULE_ID} + " - " + @{CONDITION_ID} );
+        RuleActionHandler.getInstance().handler(@{RULE_ID}, @{CONDITION_ID});
 
 end
 end template

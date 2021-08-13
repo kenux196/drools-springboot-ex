@@ -18,7 +18,8 @@ public class Device {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id")
+    private Long deviceId;
 
     @Enumerated(EnumType.STRING)
     private DeviceType type;
@@ -62,6 +63,6 @@ public class Device {
     }
 
     public void assignDeviceId(long id) {
-        this.id = id;
+        this.deviceId = id;
     }
 }

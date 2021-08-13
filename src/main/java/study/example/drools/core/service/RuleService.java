@@ -2,7 +2,6 @@ package study.example.drools.core.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tools.ant.ExitException;
 import org.springframework.stereotype.Service;
 import study.example.drools.core.domain.*;
 import study.example.drools.core.domain.enums.DeviceType;
@@ -15,7 +14,6 @@ import study.example.drools.rest.dto.RuleDto;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -45,6 +43,7 @@ public class RuleService {
                     .comparator(conditionDto.getComparator())
                     .value(conditionDto.getValue())
                     .build();
+            condition.updateRule(rule);
             ruleConditionRepository.save(condition);
             final List<DeviceDto> devices = conditionDto.getDevices();
             final List<Long> deviceIds = devices.stream()
@@ -91,6 +90,8 @@ public class RuleService {
         });
         ruleOperationRepository.saveAll(operations);
 
+        droolsService.createDroolsRule(rule);
+
         return rule.getRuleId();
     }
 
@@ -111,20 +112,6 @@ public class RuleService {
 
     }
 
-    public static SingleStatusRule createSingleStatusRule(long ruleId, long deviceId, boolean onOff, int value, String compare) {
-        return SingleStatusRule.builder()
-                .className(TempSensor.class.getSimpleName())
-                .deviceId(String.valueOf(deviceId))
-                .ruleId(ruleId)
-                .ruleName("Test Rule - " + ruleId + " - " + deviceId + " - " + onOff)
-                .conditionId(onOff)
-                .duration(null)
-                .value(String.valueOf(value))
-                .comparator(compare)
-                .operand("indoorTemp")
-                .build();
-    }
-
     private RuleDto getExampleRuleDto() throws Exception {
         final List<Device> devices = deviceRepository.findAll();
 
@@ -133,7 +120,7 @@ public class RuleService {
                 .findFirst().orElseThrow(() -> new Exception("모니터링 기기 못찾음"));
 
         DeviceDto monitoringDeviceDto = DeviceDto.builder()
-                .id(monitoringDevice.getId())
+                .id(monitoringDevice.getDeviceId())
                 .type(monitoringDevice.getType())
                 .temperature(30)
                 .build();
@@ -150,7 +137,7 @@ public class RuleService {
                 .findFirst().orElseThrow(() -> new Exception("타겟 기기 못찾음"));
 
         final DeviceDto targetDeviceDto = DeviceDto.builder()
-                .id(targetDevice.getId())
+                .id(targetDevice.getDeviceId())
                 .operating(targetDevice.getOperating())
                 .temperature(targetDevice.getTemperature())
                 .type(targetDevice.getType())

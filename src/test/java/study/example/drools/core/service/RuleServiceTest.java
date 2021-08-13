@@ -13,10 +13,8 @@ import study.example.drools.rest.dto.DeviceDto;
 import study.example.drools.rest.dto.OperationDto;
 import study.example.drools.rest.dto.RuleDto;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // 실제 DB 사용하고 싶을때 NONE 사용
@@ -38,7 +36,7 @@ class RuleServiceTest {
                 .findFirst().orElseThrow(() -> new Exception("모니터링 기기 못찾음"));
 
         DeviceDto monitoringDeviceDto = DeviceDto.builder()
-                .id(monitoringDevice.getId())
+                .id(monitoringDevice.getDeviceId())
                 .type(monitoringDevice.getType())
                 .temperature(30)
                 .build();
@@ -55,7 +53,7 @@ class RuleServiceTest {
                 .findFirst().orElseThrow(() -> new Exception("타겟 기기 못찾음"));
 
         final DeviceDto targetDeviceDto = DeviceDto.builder()
-                .id(targetDevice.getId())
+                .id(targetDevice.getDeviceId())
                 .operating(targetDevice.getOperating())
                 .temperature(targetDevice.getTemperature())
                 .type(targetDevice.getType())

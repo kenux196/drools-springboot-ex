@@ -10,7 +10,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Setter
 public class SingleStatusRule implements Serializable {
-
     /**
      * Rule Id
      */
@@ -21,7 +20,7 @@ public class SingleStatusRule implements Serializable {
      * Condition Id
      */
     @NonNull
-    private Boolean conditionId;
+    private Long conditionId;
 
     /**
      * Device ID

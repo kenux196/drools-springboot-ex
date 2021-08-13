@@ -29,12 +29,12 @@ public class DeviceService {
     private void createDevices() {
         List<Device> devices = new ArrayList<>();
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 10; i++) {
             devices.add(Device.createAirConditioner(false));
         }
 
-        for (int i = 0; i < 10; i++) {
-            devices.add(Device.createAirQualitySensor(20));
+        for (int i = 0; i < 2; i++) {
+            devices.add(Device.createAirQualitySensor(33));
         }
 
         deviceRepository.saveAll(devices);
@@ -62,10 +62,14 @@ public class DeviceService {
         deviceRepository.saveAll(airConditioners);
     }
 
-    public void changeDeviceStatus(List<Long> deviceId, boolean onOff) {
+    public void changeAllDeviceStatus(List<Long> deviceId, boolean onOff) {
         final List<Device> devices = deviceRepository.findAllById(deviceId);
         devices.forEach(device -> device.changeOperating(onOff));
         deviceRepository.saveAll(devices);
+    }
+
+    public void changeDeviceStatus(long devicId, long conditionId) {
+        log.info("changeDeviceStatus~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ impl");
     }
 
     public long getDeviceCount() {
