@@ -23,6 +23,7 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import study.example.drools.core.domain.SingleStatusRule;
 import study.example.drools.core.domain.TempSensor;
@@ -159,13 +160,15 @@ public class DroolsService {
         return ruleNames;
     }
 
+    @Scheduled(initialDelay = 20000L, fixedDelay = 20000L)
     public void validateRules() {
-        for (int i = 0; i < 100; i++) {
-            int temperature = 23;
-            int deviceId = i % 10;
-            if (deviceId == 3) temperature = 33;
-            validateRule(new TempSensor(deviceId, temperature, 35, 3));
-        }
-        fireAllRules();
+        log.info("validateRules ~~~~ run");
+//        for (int i = 0; i < 100; i++) {
+//            int temperature = 23;
+//            int deviceId = i % 10;
+//            if (deviceId == 3) temperature = 33;
+//            validateRule(new TempSensor(deviceId, temperature, 35, 3));
+//        }
+//        fireAllRules();
     }
 }
