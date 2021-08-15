@@ -7,12 +7,14 @@ import org.springframework.transaction.annotation.Transactional;
 import study.example.drools.core.domain.Device;
 import study.example.drools.core.domain.enums.DeviceType;
 import study.example.drools.core.repository.DeviceRepository;
+import study.example.drools.rest.dto.DeviceDto;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -45,8 +47,16 @@ public class DeviceService {
         return deviceRepository.save(device);
     }
 
-    public List<Device> getDevices() {
-        return deviceRepository.findAll();
+    public List<DeviceDto> getDevices() {
+        List<Device> devices = deviceRepository.findAll();
+        return devices.stream()
+                .map(device -> DeviceDto.builder()
+                        .id(device.getDeviceId())
+                        .type(device.getType())
+                        .operating(device.getOperating() != null ? device.getOperating() : "on")
+                        .temperature(device.getTemperature() != null ? device.getTemperature() : 10)
+                        .build())
+                .collect(Collectors.toList());
     }
 
     public List<Device> getDeviceByType(DeviceType deviceType) {

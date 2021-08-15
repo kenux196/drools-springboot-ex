@@ -8,6 +8,7 @@ import study.example.drools.core.domain.TempSensor;
 import study.example.drools.core.service.DroolsService;
 import study.example.drools.core.service.RuleService;
 import study.example.drools.rest.dto.DeviceAddRequest;
+import study.example.drools.rest.dto.DeviceDto;
 import study.example.drools.rest.dto.DeviceStatusResponse;
 import study.example.drools.core.service.DeviceService;
 import study.example.drools.rest.dto.RuleDto;
@@ -36,15 +37,8 @@ public class RuleController {
 
     @GetMapping("/device")
     public ResponseEntity<?> getDevices() {
-        final List<Device> devices = deviceService.getDevices();
-        final List<DeviceStatusResponse> responses = devices.stream().
-                map(device -> DeviceStatusResponse.builder()
-                        .id(device.getDeviceId())
-                        .type(device.getType())
-                        .operation(device.getOperating())
-                        .build())
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(responses);
+        final List<DeviceDto> devices = deviceService.getDevices();
+        return ResponseEntity.ok(devices);
     }
 
     @GetMapping("/sensor")

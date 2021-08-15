@@ -32,35 +32,24 @@ class RuleServiceTest {
 
     @Test
     void createRuleTest() throws Exception {
-        final List<Device> devices = deviceService.getDevices();
+        final List<DeviceDto> devices = deviceService.getDevices();
 
-        final Device monitoringDevice = devices.stream()
+        final DeviceDto monitoringDevice = devices.stream()
                 .filter(device -> device.getType().equals(DeviceType.AIR_QUALITY_SENSOR))
                 .findFirst().orElseThrow(() -> new Exception("모니터링 기기 못찾음"));
 
-        DeviceDto monitoringDeviceDto = DeviceDto.builder()
-                .id(monitoringDevice.getDeviceId())
-                .type(monitoringDevice.getType())
-                .temperature(30)
-                .build();
+        monitoringDevice.setTemperature(30);
 
         final ConditionDto conditionDto = ConditionDto.builder()
                 .operand("temperature")
                 .comparator(">")
                 .value("30")
-                .devices(Collections.singletonList(monitoringDeviceDto))
+                .devices(Collections.singletonList(monitoringDevice))
                 .build();
 
-        final Device targetDevice = devices.stream()
+        final DeviceDto targetDevice = devices.stream()
                 .filter(device -> device.getType().equals(DeviceType.AIR_CONDITIONER))
                 .findFirst().orElseThrow(() -> new Exception("타겟 기기 못찾음"));
-
-        final DeviceDto targetDeviceDto = DeviceDto.builder()
-                .id(targetDevice.getDeviceId())
-                .operating(targetDevice.getOperating())
-                .temperature(targetDevice.getTemperature())
-                .type(targetDevice.getType())
-                .build();
 
         final OperationDto operationDto = OperationDto.builder()
                 .deviceCommand("AirCondition-Power")
@@ -70,7 +59,7 @@ class RuleServiceTest {
         final RuleDto ruleDto = RuleDto.builder()
                 .name("테스트 룰 - 01010")
                 .conditions(Collections.singletonList(conditionDto))
-                .devices(Collections.singletonList(targetDeviceDto))
+                .devices(Collections.singletonList(targetDevice))
                 .operations(Collections.singletonList(operationDto))
                 .build();
 

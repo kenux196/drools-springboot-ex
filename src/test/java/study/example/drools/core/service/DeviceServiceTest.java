@@ -1,10 +1,12 @@
 package study.example.drools.core.service;
 
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import study.example.drools.core.domain.Device;
 import study.example.drools.core.domain.enums.DeviceType;
+import study.example.drools.rest.dto.DeviceDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +21,8 @@ class DeviceServiceTest {
 
     @Test
     void initTest() {
-        final List<Device> devices = deviceService.getDevices();
+        final List<DeviceDto> devices = deviceService.getDevices();
         assertThat(devices).isNotNull().isNotEmpty();
-        assertThat(devices.size()).isEqualTo(60);
         System.out.println("devices.size() = " + devices.size());
     }
 

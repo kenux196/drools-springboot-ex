@@ -1,0 +1,28 @@
+{{>layout/header}}
+
+<h1>Spring Boot & Drools Rule Engine Test</h1>
+
+<!-- 목록 출력 영역 -->
+<table class="table table-horizontal table-bordered">
+    <thead class="thead-strong">
+    <div>기기 목록</div>
+    <tr>
+        <th>device id</th>
+        <th>device type</th>
+        <th>가동 상태</th>
+        <th>현재 온도</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+    {{#devices}}
+        <tr>
+            <td>{{id}}</td>
+            <td>{{type}}</td>
+            <td>{{operating}}</td>
+            <td>{{temperature}}</td>
+        </tr>
+    {{/devices}}
+    </tbody>
+</table>
+
+{{>layout/footer}}
